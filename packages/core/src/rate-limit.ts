@@ -2,6 +2,13 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis as UpstashRedis } from "@upstash/redis";
 import IORedis from "ioredis";
 
+export class RateLimitUnavailableError extends Error {
+  constructor(message = "Rate limiter unavailable") {
+    super(message);
+    this.name = "RateLimitUnavailableError";
+  }
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type RedisBackend = UpstashRedis | any;
 
@@ -31,13 +38,13 @@ if (process.env.NODE_ENV === "production" && redis && "connect" in redis) {
     .then((pong: string) => {
       if (pong !== "PONG") {
         console.error(
-          "[rate-limit] Redis ping failed — rate limits may not work"
+          "[rate-limit] Redis ping failed — rate limits will fail closed"
         );
       }
     })
     .catch(() => {
       console.error(
-        "[rate-limit] Redis unreachable — rate limits disabled until Redis is up"
+        "[rate-limit] Redis unreachable — rate limits will fail closed"
       );
     });
 }
@@ -58,10 +65,19 @@ function makeLimiter(
 
 export const chatLimiter = makeLimiter("chat", 30, "60 s");
 export const crawlLimiter = makeLimiter("crawl", 30, "1 h");
-export const loginLimiter = makeLimiter("login", 10, "15 m");
 
 export function isRateLimitDisabled(): boolean {
   return process.env.DISABLE_RATE_LIMIT === "true";
+}
+
+export function assertRateLimitConfigured(): void {
+  if (isRateLimitDisabled()) return;
+  if (!redis) {
+    console.error(
+      "[rate-limit] Redis is required (REDIS_URL or UPSTASH_REDIS_REST_URL + TOKEN). Refusing to start."
+    );
+    process.exit(1);
+  }
 }
 
 export interface RateLimitResult {
@@ -87,19 +103,22 @@ export async function checkRateLimit(
   }
 
   if (!limiter) {
-    if (process.env.NODE_ENV === "production") {
-      console.warn(
-        "[rate-limit] Redis not configured — rate limiting disabled"
-      );
-    }
-    return noopResult;
+    throw new RateLimitUnavailableError("Redis is not configured");
   }
 
-  const result = await limiter.limit(key);
-  return {
-    success: result.success,
-    limit: result.limit,
-    remaining: result.remaining,
-    reset: result.reset,
-  };
+  try {
+    const result = await limiter.limit(key);
+    return {
+      success: result.success,
+      limit: result.limit,
+      remaining: result.remaining,
+      reset: result.reset,
+    };
+  } catch (err) {
+    if (err instanceof RateLimitUnavailableError) throw err;
+    const message = err instanceof Error ? err.message : String(err);
+    throw new RateLimitUnavailableError(
+      `Failed to evaluate rate limit: ${message}`
+    );
+  }
 }

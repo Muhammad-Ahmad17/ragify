@@ -178,17 +178,20 @@ export async function chatPost(c: Context) {
       );
     }
 
-    let rateOk = true;
     try {
       const rate = await checkRateLimit(chatLimiter, `${botId}:${ip}`);
-      rateOk = rate.success;
-    } catch {
-      /* fail open */
-    }
-    if (!rateOk) {
+      if (!rate.success) {
+        return c.json(
+          { error: "Too many requests" },
+          429,
+          corsHeaders(matchedOrigin)
+        );
+      }
+    } catch (err) {
+      logError("rate_limit_unavailable", err, { bot_id: botId });
       return c.json(
-        { error: "Too many requests" },
-        429,
+        { error: "Service temporarily unavailable" },
+        503,
         corsHeaders(matchedOrigin)
       );
     }
@@ -207,6 +210,11 @@ export async function chatPost(c: Context) {
       }
     } catch (err) {
       logError("quota_check_failed", err, { bot_id: botId });
+      return c.json(
+        { error: "Service temporarily unavailable" },
+        503,
+        corsHeaders(matchedOrigin)
+      );
     }
 
     const visitorId = signVisitorId(botId, ip, userAgent);
