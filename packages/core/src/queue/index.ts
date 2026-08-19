@@ -16,10 +16,9 @@ type RedisConn = any;
 let _connection: RedisConn | null = null;
 
 function createRedis(url: string): RedisConn {
-  return new (IORedis as unknown as new (url: string, opts?: object) => RedisConn)(
-    url,
-    { maxRetriesPerRequest: null }
-  );
+  return new (
+    IORedis as unknown as new (url: string, opts?: object) => RedisConn
+  )(url, { maxRetriesPerRequest: null });
 }
 
 export function getRedisConnection(): RedisConn {

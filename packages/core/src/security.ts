@@ -26,7 +26,10 @@ export function signVisitorId(
     .digest("hex")
     .slice(0, 8);
   const payload = `${botId}:${ip}:${day}:${uaHash}`;
-  return createHmac("sha256", secret).update(payload).digest("hex").slice(0, 32);
+  return createHmac("sha256", secret)
+    .update(payload)
+    .digest("hex")
+    .slice(0, 32);
 }
 
 export function normalizeOrigin(origin: string): string {

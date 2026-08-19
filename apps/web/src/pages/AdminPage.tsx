@@ -66,22 +66,36 @@ export default function AdminPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--bg)" }}>
-        <Loader2 className="w-6 h-6 animate-spin" style={{ color: "var(--fg-muted)" }} />
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ background: "var(--bg)" }}
+      >
+        <Loader2
+          className="w-6 h-6 animate-spin"
+          style={{ color: "var(--fg-muted)" }}
+        />
       </div>
     );
   }
 
   if (forbidden) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-5" style={{ background: "var(--bg)" }}>
+      <div
+        className="min-h-screen flex items-center justify-center px-5"
+        style={{ background: "var(--bg)" }}
+      >
         <div className="text-center max-w-sm">
           <AlertCircle className="w-8 h-8 mx-auto mb-3 text-amber-500" />
-          <p className="font-medium" style={{ color: "var(--fg)" }}>Admin access required</p>
-          <p className="text-sm mt-1" style={{ color: "var(--fg-muted)" }}>
-            Set <code className="text-xs">is_admin = true</code> on your row in the <code className="text-xs">users</code> table.
+          <p className="font-medium" style={{ color: "var(--fg)" }}>
+            Admin access required
           </p>
-          <Link to="/dashboard" className="btn btn-secondary mt-4 inline-flex">Back to dashboard</Link>
+          <p className="text-sm mt-1" style={{ color: "var(--fg-muted)" }}>
+            Set <code className="text-xs">is_admin = true</code> on your row in
+            the <code className="text-xs">users</code> table.
+          </p>
+          <Link to="/dashboard" className="btn btn-secondary mt-4 inline-flex">
+            Back to dashboard
+          </Link>
         </div>
       </div>
     );
@@ -89,19 +103,35 @@ export default function AdminPage() {
 
   if (error || !stats) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-5" style={{ background: "var(--bg)" }}>
-        <p className="text-sm text-red-500">{error ?? "Failed to load stats"}</p>
+      <div
+        className="min-h-screen flex items-center justify-center px-5"
+        style={{ background: "var(--bg)" }}
+      >
+        <p className="text-sm text-red-500">
+          {error ?? "Failed to load stats"}
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen px-5 py-10" style={{ background: "var(--bg)" }}>
+    <div
+      className="min-h-screen px-5 py-10"
+      style={{ background: "var(--bg)" }}
+    >
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-2 mb-8">
           <Shield className="w-5 h-5" style={{ color: "var(--fg)" }} />
-          <h1 className="text-xl font-medium" style={{ color: "var(--fg)" }}>Admin</h1>
-          <Link to="/dashboard" className="ml-auto text-xs" style={{ color: "var(--fg-muted)" }}>Dashboard</Link>
+          <h1 className="text-xl font-medium" style={{ color: "var(--fg)" }}>
+            Admin
+          </h1>
+          <Link
+            to="/dashboard"
+            className="ml-auto text-xs"
+            style={{ color: "var(--fg-muted)" }}
+          >
+            Dashboard
+          </Link>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
@@ -113,8 +143,16 @@ export default function AdminPage() {
         </div>
 
         <div className="card p-5 mb-6">
-          <p className="text-sm font-medium mb-3" style={{ color: "var(--fg)" }}>Plans</p>
-          <ul className="text-sm space-y-1" style={{ color: "var(--fg-secondary)" }}>
+          <p
+            className="text-sm font-medium mb-3"
+            style={{ color: "var(--fg)" }}
+          >
+            Plans
+          </p>
+          <ul
+            className="text-sm space-y-1"
+            style={{ color: "var(--fg-secondary)" }}
+          >
             <li>Free: {stats.planCounts.free}</li>
             <li>Starter: {stats.planCounts.starter}</li>
             <li>Pro: {stats.planCounts.pro}</li>
@@ -123,12 +161,21 @@ export default function AdminPage() {
 
         {stats.failedCrawls.length > 0 && (
           <div className="card p-5">
-            <p className="text-sm font-medium mb-3" style={{ color: "var(--fg)" }}>Recent failed crawls</p>
+            <p
+              className="text-sm font-medium mb-3"
+              style={{ color: "var(--fg)" }}
+            >
+              Recent failed crawls
+            </p>
             <ul className="space-y-2 text-xs">
               {stats.failedCrawls.map((j) => (
                 <li key={j.id} style={{ color: "var(--fg-muted)" }}>
                   <span className="font-mono">{j.url}</span>
-                  {j.last_error && <span className="text-red-500 block mt-0.5">{j.last_error}</span>}
+                  {j.last_error && (
+                    <span className="text-red-500 block mt-0.5">
+                      {j.last_error}
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -142,8 +189,12 @@ export default function AdminPage() {
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
     <div className="card p-4">
-      <p className="text-xs" style={{ color: "var(--fg-muted)" }}>{label}</p>
-      <p className="text-2xl font-medium mt-1" style={{ color: "var(--fg)" }}>{value}</p>
+      <p className="text-xs" style={{ color: "var(--fg-muted)" }}>
+        {label}
+      </p>
+      <p className="text-2xl font-medium mt-1" style={{ color: "var(--fg)" }}>
+        {value}
+      </p>
     </div>
   );
 }

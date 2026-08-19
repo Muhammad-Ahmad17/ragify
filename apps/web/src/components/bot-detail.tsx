@@ -22,7 +22,17 @@ import {
 } from "lucide-react";
 import type { Bot, Source, CrawlJob } from "@ragify/core/types";
 import { PLAN_LIMITS } from "@ragify/core/types";
-import { deleteBot, updateBot, crawlRequest, addTextSource, uploadPdfSource, reindexSource, startCheckout, openBillingPortal, fetchCrawlJobs } from "@/lib/bots";
+import {
+  deleteBot,
+  updateBot,
+  crawlRequest,
+  addTextSource,
+  uploadPdfSource,
+  reindexSource,
+  startCheckout,
+  openBillingPortal,
+  fetchCrawlJobs,
+} from "@/lib/bots";
 import { useAuth } from "@clerk/clerk-react";
 import { SetupChecklist, markSetupFlag } from "@/components/setup-checklist";
 import { useToast } from "@/components/ui/toast";
@@ -53,7 +63,13 @@ export function BotDetail({
   }, [searchParams]);
 
   function parseTabParam(value: string | null): BotTab {
-    if (value === "sources" || value === "usage" || value === "chats" || value === "settings") return value;
+    if (
+      value === "sources" ||
+      value === "usage" ||
+      value === "chats" ||
+      value === "settings"
+    )
+      return value;
     return "embed";
   }
 
@@ -80,11 +96,15 @@ export function BotDetail({
     <div>
       <div className="flex items-start justify-between mb-8">
         <div>
-          <h1 className="text-xl font-medium tracking-tight" style={{ color: "var(--fg)" }}>
+          <h1
+            className="text-xl font-medium tracking-tight"
+            style={{ color: "var(--fg)" }}
+          >
             {bot.name}
           </h1>
           <p className="text-sm mt-0.5" style={{ color: "var(--fg-muted)" }}>
-            {chunkCount} chunks · {sources.length} source{sources.length !== 1 ? "s" : ""} ·{" "}
+            {chunkCount} chunks · {sources.length} source
+            {sources.length !== 1 ? "s" : ""} ·{" "}
             <span className="capitalize">{bot.plan ?? "free"}</span> plan
           </p>
         </div>
@@ -109,11 +129,7 @@ export function BotDetail({
             className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
               tab === t.id ? "tab-active-accent tab-accent-highlight" : ""
             }`}
-            style={
-              tab === t.id
-                ? undefined
-                : { color: "var(--fg-muted)" }
-            }
+            style={tab === t.id ? undefined : { color: "var(--fg-muted)" }}
           >
             {t.label}
           </button>
@@ -122,12 +138,22 @@ export function BotDetail({
 
       <div className="anim-fade-in">
         {tab === "embed" && (
-          <EmbedTab bot={bot} chunkCount={chunkCount} onGoToSources={() => goToTab("sources")} />
+          <EmbedTab
+            bot={bot}
+            chunkCount={chunkCount}
+            onGoToSources={() => goToTab("sources")}
+          />
         )}
         {tab === "sources" && (
-          <SourcesTab bot={bot} sources={sources} onSourcesChange={onSourcesChange} />
+          <SourcesTab
+            bot={bot}
+            sources={sources}
+            onSourcesChange={onSourcesChange}
+          />
         )}
-        {tab === "usage" && <UsageTab bot={bot} botId={bot.id} onRefresh={onBotRefresh} />}
+        {tab === "usage" && (
+          <UsageTab bot={bot} botId={bot.id} onRefresh={onBotRefresh} />
+        )}
         {tab === "chats" && <ChatsTab botId={bot.id} />}
         {tab === "settings" && <SettingsTab bot={bot} />}
       </div>
@@ -201,14 +227,24 @@ function UsageTab({
         <p className="text-sm font-medium mb-1" style={{ color: "var(--fg)" }}>
           Messages this month
         </p>
-        <p className="text-2xl font-medium tracking-tight mb-4" style={{ color: "var(--fg)" }}>
+        <p
+          className="text-2xl font-medium tracking-tight mb-4"
+          style={{ color: "var(--fg)" }}
+        >
           {used.toLocaleString()}
-          <span className="text-sm font-normal" style={{ color: "var(--fg-muted)" }}>
-            {" "}/ {limits.messages.toLocaleString()}
+          <span
+            className="text-sm font-normal"
+            style={{ color: "var(--fg-muted)" }}
+          >
+            {" "}
+            / {limits.messages.toLocaleString()}
           </span>
         </p>
         <div className="progress-bar mb-2 relative">
-          <div className={`progress-bar-fill ${barClass}`} style={{ width: `${pct}%` }} />
+          <div
+            className={`progress-bar-fill ${barClass}`}
+            style={{ width: `${pct}%` }}
+          />
           {[25, 50, 90].map((m) => (
             <div
               key={m}
@@ -223,47 +259,85 @@ function UsageTab({
             ? `${(limits.messages - used).toLocaleString()} messages remaining`
             : "Monthly limit reached — upgrade to continue"}
         </p>
-        <p className="text-xs flex items-center gap-1.5" style={{ color: "var(--fg-secondary)" }}>
+        <p
+          className="text-xs flex items-center gap-1.5"
+          style={{ color: "var(--fg-secondary)" }}
+        >
           <MessageSquare className="w-3.5 h-3.5" />
-          {conversationCount} conversation{conversationCount !== 1 ? "s" : ""} recorded
+          {conversationCount} conversation{conversationCount !== 1 ? "s" : ""}{" "}
+          recorded
         </p>
       </div>
 
       {pct >= 70 && plan === "free" && (
-        <div className="card p-5" style={{ borderColor: "var(--warning-muted)" }}>
-          <p className="text-sm font-medium mb-1" style={{ color: "var(--fg)" }}>
+        <div
+          className="card p-5"
+          style={{ borderColor: "var(--warning-muted)" }}
+        >
+          <p
+            className="text-sm font-medium mb-1"
+            style={{ color: "var(--fg)" }}
+          >
             Running low on messages?
           </p>
           <p className="text-xs mb-3" style={{ color: "var(--fg-muted)" }}>
-            Upgrade for 5,000+ messages/month, more indexed pages, and priority crawling.
+            Upgrade for 5,000+ messages/month, more indexed pages, and priority
+            crawling.
           </p>
-          <button type="button" disabled={!!loading} onClick={() => checkout("starter")} className="btn btn-accent text-xs">
+          <button
+            type="button"
+            disabled={!!loading}
+            onClick={() => checkout("starter")}
+            className="btn btn-accent text-xs"
+          >
             {loading === "starter" ? "Loading…" : "Upgrade to Starter — $19/mo"}
           </button>
         </div>
       )}
 
       <div className="card p-5">
-        <p className="text-sm font-medium mb-3" style={{ color: "var(--fg)" }}>Plan limits</p>
+        <p className="text-sm font-medium mb-3" style={{ color: "var(--fg)" }}>
+          Plan limits
+        </p>
         <ul className="space-y-2 text-sm">
-          <li className="flex justify-between" style={{ color: "var(--fg-secondary)" }}>
+          <li
+            className="flex justify-between"
+            style={{ color: "var(--fg-secondary)" }}
+          >
             <span>Plan</span>
-            <span className="capitalize font-medium" style={{ color: "var(--fg)" }}>{plan}</span>
+            <span
+              className="capitalize font-medium"
+              style={{ color: "var(--fg)" }}
+            >
+              {plan}
+            </span>
           </li>
-          <li className="flex justify-between" style={{ color: "var(--fg-secondary)" }}>
+          <li
+            className="flex justify-between"
+            style={{ color: "var(--fg-secondary)" }}
+          >
             <span>Messages / month</span>
-            <span className="font-medium" style={{ color: "var(--fg)" }}>{limits.messages.toLocaleString()}</span>
+            <span className="font-medium" style={{ color: "var(--fg)" }}>
+              {limits.messages.toLocaleString()}
+            </span>
           </li>
-          <li className="flex justify-between" style={{ color: "var(--fg-secondary)" }}>
+          <li
+            className="flex justify-between"
+            style={{ color: "var(--fg-secondary)" }}
+          >
             <span>Pages indexed</span>
-            <span className="font-medium" style={{ color: "var(--fg)" }}>{limits.pages.toLocaleString()}</span>
+            <span className="font-medium" style={{ color: "var(--fg)" }}>
+              {limits.pages.toLocaleString()}
+            </span>
           </li>
         </ul>
       </div>
 
       {plan === "free" && (
         <div className="card p-5 space-y-3">
-          <p className="text-sm font-medium" style={{ color: "var(--fg)" }}>Upgrade</p>
+          <p className="text-sm font-medium" style={{ color: "var(--fg)" }}>
+            Upgrade
+          </p>
           <p className="text-xs" style={{ color: "var(--fg-muted)" }}>
             Checkout via Stripe. Your plan syncs automatically after payment.
           </p>
@@ -290,7 +364,11 @@ function UsageTab({
 
       {plan !== "free" && (
         <div className="card p-5">
-          <button type="button" className="btn btn-secondary text-xs" onClick={() => portal()}>
+          <button
+            type="button"
+            className="btn btn-secondary text-xs"
+            onClick={() => portal()}
+          >
             {loading === "portal" ? "Loading…" : "Manage subscription"}
           </button>
         </div>
@@ -338,7 +416,10 @@ function ChatsTab({ botId }: { botId: string }) {
   if (loading) {
     return (
       <div className="flex justify-center py-12">
-        <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--fg-muted)" }} />
+        <Loader2
+          className="w-5 h-5 animate-spin"
+          style={{ color: "var(--fg-muted)" }}
+        />
       </div>
     );
   }
@@ -347,8 +428,13 @@ function ChatsTab({ botId }: { botId: string }) {
     return (
       <div className="empty-state">
         <MessageSquare className="empty-state-icon" />
-        <p className="text-sm font-medium mb-1" style={{ color: "var(--fg)" }}>No conversations yet</p>
-        <p className="text-sm max-w-sm mx-auto" style={{ color: "var(--fg-muted)" }}>
+        <p className="text-sm font-medium mb-1" style={{ color: "var(--fg)" }}>
+          No conversations yet
+        </p>
+        <p
+          className="text-sm max-w-sm mx-auto"
+          style={{ color: "var(--fg-muted)" }}
+        >
           When visitors use your embed widget, their chats appear here.
         </p>
       </div>
@@ -369,37 +455,66 @@ function ChatsTab({ botId }: { botId: string }) {
             >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-2 gap-2">
-                  <p className="text-xs font-mono truncate" style={{ color: "var(--fg-muted)" }}>
+                  <p
+                    className="text-xs font-mono truncate"
+                    style={{ color: "var(--fg-muted)" }}
+                  >
                     Visitor {conv.visitor_id.slice(0, 8)}
                   </p>
-                  <span className="badge badge-muted shrink-0">{conv.messages?.length ?? 0} msgs</span>
+                  <span className="badge badge-muted shrink-0">
+                    {conv.messages?.length ?? 0} msgs
+                  </span>
                 </div>
                 {last && (
-                  <p className="text-sm line-clamp-2" style={{ color: "var(--fg-secondary)" }}>
-                    <span className="capitalize font-medium" style={{ color: "var(--fg)" }}>
+                  <p
+                    className="text-sm line-clamp-2"
+                    style={{ color: "var(--fg-secondary)" }}
+                  >
+                    <span
+                      className="capitalize font-medium"
+                      style={{ color: "var(--fg)" }}
+                    >
                       {last.role}:{" "}
                     </span>
                     {last.content}
                   </p>
                 )}
-                <p className="text-[10px] mt-1" style={{ color: "var(--fg-muted)" }}>
+                <p
+                  className="text-[10px] mt-1"
+                  style={{ color: "var(--fg-muted)" }}
+                >
                   {timeAgo(conv.created_at)}
                 </p>
               </div>
               {isOpen ? (
-                <ChevronUp className="w-4 h-4 shrink-0" style={{ color: "var(--fg-muted)" }} />
+                <ChevronUp
+                  className="w-4 h-4 shrink-0"
+                  style={{ color: "var(--fg-muted)" }}
+                />
               ) : (
-                <ChevronDown className="w-4 h-4 shrink-0" style={{ color: "var(--fg-muted)" }} />
+                <ChevronDown
+                  className="w-4 h-4 shrink-0"
+                  style={{ color: "var(--fg-muted)" }}
+                />
               )}
             </button>
             {isOpen && conv.messages && (
-              <div className="px-4 pb-4 space-y-2 border-t" style={{ borderColor: "var(--border)" }}>
+              <div
+                className="px-4 pb-4 space-y-2 border-t"
+                style={{ borderColor: "var(--border)" }}
+              >
                 {conv.messages.map((m, i) => (
                   <div key={i} className="text-sm py-2">
-                    <span className="text-xs font-medium capitalize" style={{ color: "var(--accent-fg)" }}>
+                    <span
+                      className="text-xs font-medium capitalize"
+                      style={{ color: "var(--accent-fg)" }}
+                    >
                       {m.role}
                     </span>
-                    <p className="mt-0.5 whitespace-pre-wrap" style={{ color: "var(--fg-secondary)" }}>
+                    <p
+                      className="mt-0.5 whitespace-pre-wrap"
+                      style={{ color: "var(--fg-secondary)" }}
+                    >
                       {m.content}
                     </p>
                   </div>
@@ -444,12 +559,25 @@ function EmbedTab({
   if (chunkCount === 0) {
     return (
       <div className="empty-state">
-        <AlertCircle className="empty-state-icon" style={{ color: "var(--warning)" }} />
-        <p className="text-sm font-medium mb-1" style={{ color: "var(--fg)" }}>Index content first</p>
-        <p className="text-sm mb-6 max-w-sm mx-auto" style={{ color: "var(--fg-secondary)" }}>
-          Add text, a URL, or a PDF on the Sources tab. Embed code unlocks once content is indexed.
+        <AlertCircle
+          className="empty-state-icon"
+          style={{ color: "var(--warning)" }}
+        />
+        <p className="text-sm font-medium mb-1" style={{ color: "var(--fg)" }}>
+          Index content first
         </p>
-        <button type="button" onClick={onGoToSources} className="btn btn-accent">
+        <p
+          className="text-sm mb-6 max-w-sm mx-auto"
+          style={{ color: "var(--fg-secondary)" }}
+        >
+          Add text, a URL, or a PDF on the Sources tab. Embed code unlocks once
+          content is indexed.
+        </p>
+        <button
+          type="button"
+          onClick={onGoToSources}
+          className="btn btn-accent"
+        >
           Go to Sources
         </button>
       </div>
@@ -459,15 +587,27 @@ function EmbedTab({
   return (
     <div className="space-y-4">
       <div className="card p-5">
-        <p className="text-sm font-medium mb-3" style={{ color: "var(--fg)" }}>How to embed</p>
-        <ol className="space-y-2 text-sm mb-4" style={{ color: "var(--fg-secondary)" }}>
+        <p className="text-sm font-medium mb-3" style={{ color: "var(--fg)" }}>
+          How to embed
+        </p>
+        <ol
+          className="space-y-2 text-sm mb-4"
+          style={{ color: "var(--fg-secondary)" }}
+        >
           <li className="flex gap-2">
             <span className="setup-step-icon done shrink-0 mt-0.5">1</span>
             Copy the snippet below
           </li>
           <li className="flex gap-2">
             <span className="setup-step-icon done shrink-0 mt-0.5">2</span>
-            Paste before <code className="text-xs font-mono" style={{ color: "var(--code)" }}>&lt;/body&gt;</code> on your site
+            Paste before{" "}
+            <code
+              className="text-xs font-mono"
+              style={{ color: "var(--code)" }}
+            >
+              &lt;/body&gt;
+            </code>{" "}
+            on your site
           </li>
           <li className="flex gap-2">
             <span className="setup-step-icon done shrink-0 mt-0.5">3</span>
@@ -475,9 +615,15 @@ function EmbedTab({
           </li>
         </ol>
         <div className="flex items-center justify-between mb-3">
-          <p className="text-sm font-medium" style={{ color: "var(--fg)" }}>Embed snippet</p>
+          <p className="text-sm font-medium" style={{ color: "var(--fg)" }}>
+            Embed snippet
+          </p>
           <button onClick={copy} className="btn btn-accent h-8 text-xs">
-            {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+            {copied ? (
+              <Check className="w-3.5 h-3.5" />
+            ) : (
+              <Copy className="w-3.5 h-3.5" />
+            )}
             {copied ? "Copied" : "Copy"}
           </button>
         </div>
@@ -492,17 +638,33 @@ function EmbedTab({
       <div className="demo-frame overflow-hidden">
         <div
           className="flex items-center justify-between px-4 py-3"
-          style={{ borderBottom: "1px solid var(--border)", background: "var(--card)" }}
+          style={{
+            borderBottom: "1px solid var(--border)",
+            background: "var(--card)",
+          }}
         >
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ background: bot.primary_color }} />
-            <p className="text-sm font-medium" style={{ color: "var(--fg)" }}>Live preview</p>
+            <div
+              className="w-3 h-3 rounded-full"
+              style={{ background: bot.primary_color }}
+            />
+            <p className="text-sm font-medium" style={{ color: "var(--fg)" }}>
+              Live preview
+            </p>
           </div>
-          <button type="button" onClick={openPreview} className="btn btn-secondary h-8 text-xs">
+          <button
+            type="button"
+            onClick={openPreview}
+            className="btn btn-secondary h-8 text-xs"
+          >
             <ExternalLink className="w-3.5 h-3.5" /> Open
           </button>
         </div>
-        <iframe src={previewUrl} className="w-full h-[460px] bg-white" title="Preview" />
+        <iframe
+          src={previewUrl}
+          className="w-full h-[460px] bg-white"
+          title="Preview"
+        />
       </div>
     </div>
   );
@@ -530,10 +692,25 @@ function SourcesTab({
   const { getToken } = useAuth();
   const { toast } = useToast();
 
-  const addModes: { id: AddMode; label: string; icon: typeof Link2; hint: string }[] = [
-    { id: "text", label: "Text", icon: FileText, hint: "Paste about-me, FAQs, or notes" },
+  const addModes: {
+    id: AddMode;
+    label: string;
+    icon: typeof Link2;
+    hint: string;
+  }[] = [
+    {
+      id: "text",
+      label: "Text",
+      icon: FileText,
+      hint: "Paste about-me, FAQs, or notes",
+    },
     { id: "url", label: "URL", icon: Link2, hint: "Crawl a web page or site" },
-    { id: "pdf", label: "PDF", icon: FileUp, hint: "Upload a document (max 10 MB)" },
+    {
+      id: "pdf",
+      label: "PDF",
+      icon: FileUp,
+      hint: "Upload a document (max 10 MB)",
+    },
   ];
 
   useEffect(() => {
@@ -581,7 +758,12 @@ function SourcesTab({
         setError("Not authenticated");
         return;
       }
-      const body = await crawlRequest(token, { botId: bot.id, sourceId, url, crawlSite });
+      const body = await crawlRequest(token, {
+        botId: bot.id,
+        sourceId,
+        url,
+        crawlSite,
+      });
       if (body.error) {
         setError(body.error);
         return;
@@ -620,7 +802,12 @@ function SourcesTab({
         setError("Not authenticated");
         return;
       }
-      const body = await addTextSource(token, bot.id, textTitle.trim(), textContent.trim());
+      const body = await addTextSource(
+        token,
+        bot.id,
+        textTitle.trim(),
+        textContent.trim()
+      );
       if (body.error) {
         setError(body.error);
         return;
@@ -678,7 +865,9 @@ function SourcesTab({
       <div className="card p-5">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <p className="text-sm font-medium" style={{ color: "var(--fg)" }}>Knowledge base</p>
+            <p className="text-sm font-medium" style={{ color: "var(--fg)" }}>
+              Knowledge base
+            </p>
             <p className="text-xs mt-0.5" style={{ color: "var(--fg-muted)" }}>
               {sources.length === 0
                 ? "No context yet — add text, a URL, or a PDF below."
@@ -690,30 +879,61 @@ function SourcesTab({
         {sources.length === 0 ? (
           <div
             className="rounded-lg py-10 px-6 text-center"
-            style={{ background: "var(--bg-subtle)", border: "1px dashed var(--border)" }}
+            style={{
+              background: "var(--bg-subtle)",
+              border: "1px dashed var(--border)",
+            }}
           >
-            <FileText className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--fg-muted)" }} />
-            <p className="text-sm font-medium mb-1" style={{ color: "var(--fg)" }}>Your bot needs context</p>
-            <p className="text-xs max-w-sm mx-auto mb-4" style={{ color: "var(--fg-muted)" }}>
-              Add personal details as text, crawl a website, or upload a PDF. You can mix all three.
+            <FileText
+              className="w-8 h-8 mx-auto mb-3"
+              style={{ color: "var(--fg-muted)" }}
+            />
+            <p
+              className="text-sm font-medium mb-1"
+              style={{ color: "var(--fg)" }}
+            >
+              Your bot needs context
+            </p>
+            <p
+              className="text-xs max-w-sm mx-auto mb-4"
+              style={{ color: "var(--fg-muted)" }}
+            >
+              Add personal details as text, crawl a website, or upload a PDF.
+              You can mix all three.
             </p>
             <div className="flex flex-wrap gap-2 justify-center">
-              <button type="button" onClick={() => setMode("text")} className="btn btn-accent text-xs">
+              <button
+                type="button"
+                onClick={() => setMode("text")}
+                className="btn btn-accent text-xs"
+              >
                 Add text
               </button>
-              <button type="button" onClick={() => setMode("url")} className="btn btn-secondary text-xs">
+              <button
+                type="button"
+                onClick={() => setMode("url")}
+                className="btn btn-secondary text-xs"
+              >
                 Add URL
               </button>
-              <button type="button" onClick={() => setMode("pdf")} className="btn btn-secondary text-xs">
+              <button
+                type="button"
+                onClick={() => setMode("pdf")}
+                className="btn btn-secondary text-xs"
+              >
                 Upload PDF
               </button>
             </div>
           </div>
         ) : (
-          <div className="divide-y rounded-lg overflow-hidden" style={{ border: "1px solid var(--border)" }}>
+          <div
+            className="divide-y rounded-lg overflow-hidden"
+            style={{ border: "1px solid var(--border)" }}
+          >
             {sources.map((s) => {
               const kind = sourceKind(s);
-              const KindIcon = kind === "url" ? Link2 : kind === "pdf" ? FileUp : FileText;
+              const KindIcon =
+                kind === "url" ? Link2 : kind === "pdf" ? FileUp : FileText;
               return (
                 <div
                   key={s.id}
@@ -726,7 +946,10 @@ function SourcesTab({
                   {s.status === "crawling" && (
                     <div
                       className="absolute inset-0 pointer-events-none"
-                      style={{ background: "var(--warning-muted)", opacity: 0.3 }}
+                      style={{
+                        background: "var(--warning-muted)",
+                        opacity: 0.3,
+                      }}
                     />
                   )}
                   <div className="flex-1 min-w-0">
@@ -734,13 +957,27 @@ function SourcesTab({
                       <StatusBadge status={s.status} />
                       <span
                         className="text-[10px] uppercase tracking-wide font-medium px-1.5 py-0.5 rounded"
-                        style={{ background: "var(--bg-subtle)", color: "var(--fg-muted)" }}
+                        style={{
+                          background: "var(--bg-subtle)",
+                          color: "var(--fg-muted)",
+                        }}
                       >
                         {kindLabel(kind)}
                       </span>
-                      <KindIcon className="w-3.5 h-3.5 shrink-0" style={{ color: "var(--fg-muted)" }} />
-                      <p className="text-sm font-medium truncate" style={{ color: "var(--fg)" }}>
-                        {s.title || (kind === "url" ? s.url : kind === "pdf" ? "PDF" : "Text note")}
+                      <KindIcon
+                        className="w-3.5 h-3.5 shrink-0"
+                        style={{ color: "var(--fg-muted)" }}
+                      />
+                      <p
+                        className="text-sm font-medium truncate"
+                        style={{ color: "var(--fg)" }}
+                      >
+                        {s.title ||
+                          (kind === "url"
+                            ? s.url
+                            : kind === "pdf"
+                              ? "PDF"
+                              : "Text note")}
                       </p>
                     </div>
                     {kind === "url" ? (
@@ -754,21 +991,32 @@ function SourcesTab({
                         {s.url}
                       </a>
                     ) : (
-                      <p className="text-xs truncate" style={{ color: "var(--fg-muted)" }}>
+                      <p
+                        className="text-xs truncate"
+                        style={{ color: "var(--fg-muted)" }}
+                      >
                         {sourceSubtitle(s)}
                       </p>
                     )}
                     {s.error_message && (
-                      <p className="text-xs text-red-500 mt-0.5">{s.error_message}</p>
+                      <p className="text-xs text-red-500 mt-0.5">
+                        {s.error_message}
+                      </p>
                     )}
                   </div>
                   <button
-                    onClick={() => (kind === "url" ? crawl(s.id) : reindex(s.id))}
+                    onClick={() =>
+                      kind === "url" ? crawl(s.id) : reindex(s.id)
+                    }
                     disabled={pending}
-                    title={kind === "pdf" ? "Re-upload PDF to refresh" : "Refresh"}
+                    title={
+                      kind === "pdf" ? "Re-upload PDF to refresh" : "Refresh"
+                    }
                     className="btn btn-secondary h-8 px-2"
                   >
-                    <RefreshCw className={`w-3.5 h-3.5 ${pending ? "animate-spin" : ""}`} />
+                    <RefreshCw
+                      className={`w-3.5 h-3.5 ${pending ? "animate-spin" : ""}`}
+                    />
                   </button>
                 </div>
               );
@@ -779,17 +1027,29 @@ function SourcesTab({
 
       {crawlJobs.length > 0 && (
         <div className="card p-4">
-          <p className="text-sm font-medium mb-2" style={{ color: "var(--fg)" }}>
+          <p
+            className="text-sm font-medium mb-2"
+            style={{ color: "var(--fg)" }}
+          >
             Background crawl queue
           </p>
           <ul className="space-y-2">
             {crawlJobs.map((j) => (
               <li key={j.id} className="flex items-center gap-2 text-xs">
-                <Loader2 className="w-3 h-3 animate-spin shrink-0" style={{ color: "#f59e0b" }} />
-                <span className="truncate font-mono" style={{ color: "var(--fg-secondary)" }}>
+                <Loader2
+                  className="w-3 h-3 animate-spin shrink-0"
+                  style={{ color: "#f59e0b" }}
+                />
+                <span
+                  className="truncate font-mono"
+                  style={{ color: "var(--fg-secondary)" }}
+                >
                   {j.url}
                 </span>
-                <span className="capitalize shrink-0" style={{ color: "var(--fg-muted)" }}>
+                <span
+                  className="capitalize shrink-0"
+                  style={{ color: "var(--fg-muted)" }}
+                >
                   {j.status}
                 </span>
               </li>
@@ -799,11 +1059,16 @@ function SourcesTab({
       )}
 
       <div className="card p-5">
-        <p className="text-sm font-medium mb-1" style={{ color: "var(--fg)" }}>Add context</p>
+        <p className="text-sm font-medium mb-1" style={{ color: "var(--fg)" }}>
+          Add context
+        </p>
         <p className="text-xs mb-4" style={{ color: "var(--fg-muted)" }}>
           Choose any format — text, URL, or PDF. All are indexed the same way.
         </p>
-        <div className="flex gap-1 p-1 rounded-lg mb-4" style={{ background: "var(--bg-subtle)" }}>
+        <div
+          className="flex gap-1 p-1 rounded-lg mb-4"
+          style={{ background: "var(--bg-subtle)" }}
+        >
           {addModes.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
@@ -842,13 +1107,18 @@ function SourcesTab({
                 disabled={!newUrl || pending}
                 className="btn btn-primary shrink-0"
               >
-                {pending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+                {pending ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Plus className="w-4 h-4" />
+                )}
                 Crawl
               </button>
             </div>
             {newUrl && (
               <p className="text-xs mt-2" style={{ color: "var(--fg-muted)" }}>
-                Use <strong>Crawl</strong> for one page. &quot;Crawl entire site&quot; is limited on free hosting — prefer single URLs.
+                Use <strong>Crawl</strong> for one page. &quot;Crawl entire
+                site&quot; is limited on free hosting — prefer single URLs.
               </p>
             )}
             {newUrl && (
@@ -884,7 +1154,11 @@ function SourcesTab({
               disabled={!textTitle.trim() || !textContent.trim() || pending}
               className="btn btn-primary"
             >
-              {pending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+              {pending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Plus className="w-4 h-4" />
+              )}
               Save & index text
             </button>
           </div>
@@ -894,10 +1168,19 @@ function SourcesTab({
           <div className="space-y-3">
             <label
               className="flex flex-col items-center justify-center gap-2 p-8 rounded-lg border border-dashed cursor-pointer transition-colors hover:opacity-80"
-              style={{ borderColor: "var(--border)", background: "var(--bg-subtle)" }}
+              style={{
+                borderColor: "var(--border)",
+                background: "var(--bg-subtle)",
+              }}
             >
-              <FileUp className="w-8 h-8" style={{ color: "var(--fg-muted)" }} />
-              <span className="text-sm" style={{ color: "var(--fg-secondary)" }}>
+              <FileUp
+                className="w-8 h-8"
+                style={{ color: "var(--fg-muted)" }}
+              />
+              <span
+                className="text-sm"
+                style={{ color: "var(--fg-secondary)" }}
+              >
                 {pdfFile ? pdfFile.name : "Choose a PDF (max 10 MB)"}
               </span>
               <input
@@ -912,7 +1195,11 @@ function SourcesTab({
               disabled={!pdfFile || pending}
               className="btn btn-primary"
             >
-              {pending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+              {pending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Plus className="w-4 h-4" />
+              )}
               Upload & index PDF
             </button>
           </div>
@@ -930,11 +1217,18 @@ function StatusBadge({ status }: { status: Source["status"] }) {
     pending: { cls: "badge-muted", label: "Pending" },
     crawling: { cls: "badge-warning", label: "Indexing" },
     ready: { cls: "badge-success", label: "Ready" },
-    error: { cls: "badge", label: "Error", style: { background: "var(--error-muted)", color: "var(--error)" } },
+    error: {
+      cls: "badge",
+      label: "Error",
+      style: { background: "var(--error-muted)", color: "var(--error)" },
+    },
   }[status];
 
   return (
-    <span className={`badge ${map.cls}`} style={"style" in map ? map.style : undefined}>
+    <span
+      className={`badge ${map.cls}`}
+      style={"style" in map ? map.style : undefined}
+    >
       {status === "ready" && <CheckCircle2 className="w-3 h-3" />}
       {status === "crawling" && <Loader2 className="w-3 h-3 animate-spin" />}
       {map.label}
@@ -967,10 +1261,18 @@ function SettingsTab({ bot }: { bot: Bot }) {
       }
       const res = await updateBot(token, bot.id, {
         name: (form.elements.namedItem("name") as HTMLInputElement).value,
-        welcome_message: (form.elements.namedItem("welcome_message") as HTMLInputElement).value,
-        primary_color: (form.elements.namedItem("primary_color") as HTMLInputElement).value,
-        system_prompt: (form.elements.namedItem("system_prompt") as HTMLTextAreaElement).value,
-        allowed_origins: (form.elements.namedItem("allowed_origins") as HTMLTextAreaElement).value,
+        welcome_message: (
+          form.elements.namedItem("welcome_message") as HTMLInputElement
+        ).value,
+        primary_color: (
+          form.elements.namedItem("primary_color") as HTMLInputElement
+        ).value,
+        system_prompt: (
+          form.elements.namedItem("system_prompt") as HTMLTextAreaElement
+        ).value,
+        allowed_origins: (
+          form.elements.namedItem("allowed_origins") as HTMLTextAreaElement
+        ).value,
       });
       if (res && "error" in res && res.error) {
         setError(res.error);
@@ -985,13 +1287,23 @@ function SettingsTab({ bot }: { bot: Bot }) {
   return (
     <form onSubmit={onSubmit} className="space-y-4 max-w-lg">
       <div className="card p-5 space-y-4">
-        <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--accent-fg)" }}>
+        <p
+          className="text-xs font-semibold uppercase tracking-wide"
+          style={{ color: "var(--accent-fg)" }}
+        >
           Identity
         </p>
         <Field label="Name" name="name" defaultValue={bot.name} />
-        <Field label="Welcome message" name="welcome_message" defaultValue={bot.welcome_message} />
+        <Field
+          label="Welcome message"
+          name="welcome_message"
+          defaultValue={bot.welcome_message}
+        />
         <div>
-          <label className="text-xs font-medium mb-1.5 block" style={{ color: "var(--fg-secondary)" }}>
+          <label
+            className="text-xs font-medium mb-1.5 block"
+            style={{ color: "var(--fg-secondary)" }}
+          >
             Brand color
           </label>
           <input
@@ -1004,11 +1316,17 @@ function SettingsTab({ bot }: { bot: Bot }) {
       </div>
 
       <div className="card p-5 space-y-4">
-        <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--accent-fg)" }}>
+        <p
+          className="text-xs font-semibold uppercase tracking-wide"
+          style={{ color: "var(--accent-fg)" }}
+        >
           Behavior
         </p>
         <div>
-          <label className="text-xs font-medium mb-1.5 block" style={{ color: "var(--fg-secondary)" }}>
+          <label
+            className="text-xs font-medium mb-1.5 block"
+            style={{ color: "var(--fg-secondary)" }}
+          >
             System prompt
           </label>
           <textarea
@@ -1019,17 +1337,24 @@ function SettingsTab({ bot }: { bot: Bot }) {
             className="input h-auto py-2 resize-y font-mono text-xs"
           />
           <p className="text-xs mt-1" style={{ color: "var(--fg-muted)" }}>
-            Tell the bot how to connect facts across your sources and handle aliases (e.g. same person, different names).
+            Tell the bot how to connect facts across your sources and handle
+            aliases (e.g. same person, different names).
           </p>
         </div>
       </div>
 
       <div className="card p-5 space-y-4">
-        <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--accent-fg)" }}>
+        <p
+          className="text-xs font-semibold uppercase tracking-wide"
+          style={{ color: "var(--accent-fg)" }}
+        >
           Security
         </p>
         <div>
-          <label className="text-xs font-medium mb-1.5 block" style={{ color: "var(--fg-secondary)" }}>
+          <label
+            className="text-xs font-medium mb-1.5 block"
+            style={{ color: "var(--fg-secondary)" }}
+          >
             Allowed domains
           </label>
           <textarea
@@ -1040,7 +1365,8 @@ function SettingsTab({ bot }: { bot: Bot }) {
             className="input h-auto py-2 resize-y font-mono text-xs"
           />
           <p className="text-xs mt-1" style={{ color: "var(--fg-muted)" }}>
-            One origin per line. Leave empty to allow all origins during setup. Use * to explicitly allow all.
+            One origin per line. Leave empty to allow all origins during setup.
+            Use * to explicitly allow all.
           </p>
         </div>
       </div>
@@ -1051,7 +1377,10 @@ function SettingsTab({ bot }: { bot: Bot }) {
           Save changes
         </button>
         {saved && (
-          <span className="text-xs flex items-center gap-1" style={{ color: "var(--success)" }}>
+          <span
+            className="text-xs flex items-center gap-1"
+            style={{ color: "var(--success)" }}
+          >
             <CheckCircle2 className="w-3.5 h-3.5" /> Saved
           </span>
         )}
@@ -1061,13 +1390,29 @@ function SettingsTab({ bot }: { bot: Bot }) {
   );
 }
 
-function Field({ label, name, defaultValue }: { label: string; name: string; defaultValue: string }) {
+function Field({
+  label,
+  name,
+  defaultValue,
+}: {
+  label: string;
+  name: string;
+  defaultValue: string;
+}) {
   return (
     <div>
-      <label className="text-xs font-medium mb-1.5 block" style={{ color: "var(--fg-secondary)" }}>
+      <label
+        className="text-xs font-medium mb-1.5 block"
+        style={{ color: "var(--fg-secondary)" }}
+      >
         {label}
       </label>
-      <input name={name} defaultValue={defaultValue} required className="input" />
+      <input
+        name={name}
+        defaultValue={defaultValue}
+        required
+        className="input"
+      />
     </div>
   );
 }
@@ -1090,7 +1435,11 @@ function DeleteButton({ botId }: { botId: string }) {
       disabled={pending}
       className="btn btn-ghost text-red-500"
     >
-      {pending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+      {pending ? (
+        <Loader2 className="w-4 h-4 animate-spin" />
+      ) : (
+        <Trash2 className="w-4 h-4" />
+      )}
     </button>
   );
 }

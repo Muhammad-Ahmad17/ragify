@@ -57,7 +57,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const stored = localStorage.getItem(THEME_STORAGE_KEY) as ThemeSetting | null;
+    const stored = localStorage.getItem(
+      THEME_STORAGE_KEY
+    ) as ThemeSetting | null;
     const initial =
       stored === "light" || stored === "dark" || stored === "system"
         ? stored

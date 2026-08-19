@@ -50,7 +50,12 @@ async function fetchPageContent(url: string) {
     return { title: result.title, text: result.text };
   } catch (err) {
     if (process.env.ZYTE_API_KEY) {
-      log({ level: "warn", msg: "direct_crawl_failed_zyte", url, error: String(err) });
+      log({
+        level: "warn",
+        msg: "direct_crawl_failed_zyte",
+        url,
+        error: String(err),
+      });
       const zyte = await fetchViaZyte(url);
       return { title: zyte.title, text: zyte.text };
     }
@@ -68,9 +73,19 @@ export async function processSourceCrawl(
 
   try {
     const page = await fetchPageContent(url);
-    const result = await indexSourceText(botId, sourceId, page.text, page.title);
+    const result = await indexSourceText(
+      botId,
+      sourceId,
+      page.text,
+      page.title
+    );
     if (result.ok) {
-      log({ msg: "source_crawl_done", bot_id: botId, url, chunks: result.chunks });
+      log({
+        msg: "source_crawl_done",
+        bot_id: botId,
+        url,
+        chunks: result.chunks,
+      });
     }
     return result;
   } catch (err) {

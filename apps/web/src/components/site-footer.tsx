@@ -20,27 +20,38 @@ const columns = [
   },
   {
     title: "Company",
-    links: [
-      { label: "Start free", href: "/login" },
-    ],
+    links: [{ label: "Start free", href: "/login" }],
   },
 ];
 
 export function SiteFooter() {
   return (
-    <footer style={{ borderTop: "1px solid var(--border)", background: "var(--bg)" }}>
+    <footer
+      style={{ borderTop: "1px solid var(--border)", background: "var(--bg)" }}
+    >
       <div className="max-w-6xl mx-auto px-5 py-14">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
           <div className="col-span-2 md:col-span-1">
-            <Link to="/" className="text-sm font-medium" style={{ color: "var(--fg)" }}>
+            <Link
+              to="/"
+              className="text-sm font-medium"
+              style={{ color: "var(--fg)" }}
+            >
               Ragify
             </Link>
-            <p className="text-xs mt-3 leading-relaxed max-w-[220px]" style={{ color: "var(--fg-muted)" }}>
-              Turn docs, sites, and PDFs into embeddable AI chatbots. Built with Ragify on your site.
+            <p
+              className="text-xs mt-3 leading-relaxed max-w-[220px]"
+              style={{ color: "var(--fg-muted)" }}
+            >
+              Turn docs, sites, and PDFs into embeddable AI chatbots. Built with
+              Ragify on your site.
             </p>
             <span
               className="inline-flex mt-3 text-[10px] font-medium px-2 py-1 rounded-full"
-              style={{ background: "var(--accent-muted)", color: "var(--accent-fg)" }}
+              style={{
+                background: "var(--accent-muted)",
+                color: "var(--accent-fg)",
+              }}
             >
               Built with Ragify
             </span>
@@ -48,7 +59,10 @@ export function SiteFooter() {
 
           {columns.map((col) => (
             <div key={col.title}>
-              <p className="text-xs font-medium mb-3" style={{ color: "var(--fg-secondary)" }}>
+              <p
+                className="text-xs font-medium mb-3"
+                style={{ color: "var(--fg-secondary)" }}
+              >
                 {col.title}
               </p>
               <ul className="space-y-2">

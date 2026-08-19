@@ -59,7 +59,9 @@ export async function upsertUserFromClerk(
   return row;
 }
 
-export async function getUserByClerkId(clerkUserId: string): Promise<User | null> {
+export async function getUserByClerkId(
+  clerkUserId: string
+): Promise<User | null> {
   const sql = getSql();
   const [row] = await sql<User[]>`
     select * from users where clerk_user_id = ${clerkUserId} limit 1
@@ -93,7 +95,9 @@ export async function updateUserPlan(
 
 export async function getBotById(botId: string): Promise<Bot | null> {
   const sql = getSql();
-  const [row] = await sql<Bot[]>`select * from bots where id = ${botId} limit 1`;
+  const [row] = await sql<
+    Bot[]
+  >`select * from bots where id = ${botId} limit 1`;
   return row ?? null;
 }
 
@@ -110,7 +114,9 @@ export async function getBotForOwner(
 
 export async function getBotsByOwner(ownerId: string): Promise<Bot[]> {
   const sql = getSql();
-  return sql<Bot[]>`select * from bots where owner_id = ${ownerId} order by created_at desc`;
+  return sql<
+    Bot[]
+  >`select * from bots where owner_id = ${ownerId} order by created_at desc`;
 }
 
 export async function createBot(
@@ -129,7 +135,10 @@ export async function createBot(
   return row;
 }
 
-export async function deleteBot(botId: string, ownerId: string): Promise<boolean> {
+export async function deleteBot(
+  botId: string,
+  ownerId: string
+): Promise<boolean> {
   const sql = getSql();
   const result = await sql`
     delete from bots where id = ${botId} and owner_id = ${ownerId}
@@ -277,7 +286,10 @@ export async function createContentSource(
   return inserted;
 }
 
-export async function updateSourceRawContent(sourceId: string, rawContent: string) {
+export async function updateSourceRawContent(
+  sourceId: string,
+  rawContent: string
+) {
   const sql = getSql();
   await sql`update sources set raw_content = ${rawContent} where id = ${sourceId}`;
 }
@@ -368,7 +380,9 @@ export async function getCrawlJobsByBot(botId: string, ownerId: string) {
   `;
 }
 
-export async function webhookAlreadyProcessed(eventId: string): Promise<boolean> {
+export async function webhookAlreadyProcessed(
+  eventId: string
+): Promise<boolean> {
   const sql = getSql();
   const [row] = await sql<{ id: string }[]>`
     select id from processed_webhooks where event_id = ${eventId} limit 1
@@ -399,10 +413,15 @@ export async function getUserByStripeCustomerId(customerId: string) {
 
 export async function countAdminStats() {
   const sql = getSql();
-  const [bots] = await sql<[{ count: string }]>`select count(*)::text as count from bots`;
-  const [sources] = await sql<[{ count: string }]>`select count(*)::text as count from sources`;
-  const [conversations] =
-    await sql<[{ count: string }]>`select count(*)::text as count from conversations`;
+  const [bots] = await sql<
+    [{ count: string }]
+  >`select count(*)::text as count from bots`;
+  const [sources] = await sql<
+    [{ count: string }]
+  >`select count(*)::text as count from sources`;
+  const [conversations] = await sql<
+    [{ count: string }]
+  >`select count(*)::text as count from conversations`;
   const [activeJobs] = await sql<[{ count: string }]>`
     select count(*)::text as count from crawl_jobs where status in ('pending','running','error')
   `;

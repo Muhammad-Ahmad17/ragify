@@ -141,7 +141,11 @@ export async function addTextSource(
   return data;
 }
 
-export async function uploadPdfSource(token: string, botId: string, file: File) {
+export async function uploadPdfSource(
+  token: string,
+  botId: string,
+  file: File
+) {
   const form = new FormData();
   form.append("botId", botId);
   form.append("file", file);
@@ -156,7 +160,11 @@ export async function uploadPdfSource(token: string, botId: string, file: File) 
   return data;
 }
 
-export async function reindexSource(token: string, botId: string, sourceId: string) {
+export async function reindexSource(
+  token: string,
+  botId: string,
+  sourceId: string
+) {
   const res = await fetch("/api/sources/reindex", {
     method: "POST",
     headers: {

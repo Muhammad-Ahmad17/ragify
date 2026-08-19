@@ -6,12 +6,13 @@ import {
   processSourceCrawl,
   processUrlBatch,
 } from "@ragify/core/crawl-worker";
-import {
-  createCrawlJob,
-  getBotForOwner,
-} from "@ragify/core/db";
+import { createCrawlJob, getBotForOwner } from "@ragify/core/db";
 import { enqueueCrawlJob } from "@ragify/core/queue";
-import { assertSafeUrl, UnsafeUrlError, discoverFromSitemap } from "@ragify/core/crawler";
+import {
+  assertSafeUrl,
+  UnsafeUrlError,
+  discoverFromSitemap,
+} from "@ragify/core/crawler";
 import { crawlLimiter, checkRateLimit } from "@ragify/core/rate-limit";
 import { getClientIp } from "@ragify/core/security";
 import { log, logError } from "@ragify/core/log";
@@ -35,7 +36,10 @@ export async function crawlPost(c: Context) {
     const json = await c.req.json().catch(() => null);
     const parsed = bodySchema.safeParse(json);
     if (!parsed.success || (!parsed.data.sourceId && !parsed.data.url)) {
-      return c.json({ error: "Provide botId plus either sourceId or url." }, 400);
+      return c.json(
+        { error: "Provide botId plus either sourceId or url." },
+        400
+      );
     }
 
     const { botId, sourceId, url, crawlSite } = parsed.data;
@@ -44,10 +48,18 @@ export async function crawlPost(c: Context) {
     try {
       rate = await checkRateLimit(crawlLimiter, user.id);
     } catch {
-      rate = { success: true, limit: 999, remaining: 999, reset: Date.now() + 60_000 };
+      rate = {
+        success: true,
+        limit: 999,
+        remaining: 999,
+        reset: Date.now() + 60_000,
+      };
     }
     if (!rate.success) {
-      return c.json({ error: "Crawl rate limit exceeded. Try again later." }, 429);
+      return c.json(
+        { error: "Crawl rate limit exceeded. Try again later." },
+        429
+      );
     }
 
     const bot = await getBotForOwner(botId, user.id);
@@ -67,7 +79,10 @@ export async function crawlPost(c: Context) {
       const discovered = await discoverFromSitemap(url, plan);
       if (discovered.length === 0) {
         return c.json(
-          { error: "No URLs found in sitemap. Use the single Crawl button instead." },
+          {
+            error:
+              "No URLs found in sitemap. Use the single Crawl button instead.",
+          },
           400
         );
       }
@@ -167,7 +182,8 @@ export async function crawlPost(c: Context) {
     });
 
     const result = await processSourceCrawl(botId, sid, targetUrl);
-    if (!result.ok) return c.json({ error: result.error ?? "Crawl failed" }, 500);
+    if (!result.ok)
+      return c.json({ error: result.error ?? "Crawl failed" }, 500);
 
     return c.json({
       ok: true,

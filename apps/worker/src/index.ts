@@ -30,7 +30,12 @@ validateEnv();
 
 async function processJob(job: Job<CrawlJobPayload>) {
   const { jobId, botId, url, sourceId } = job.data;
-  log({ msg: "worker_job_start", job_id: jobId, url, attempt: job.attemptsMade });
+  log({
+    msg: "worker_job_start",
+    job_id: jobId,
+    url,
+    attempt: job.attemptsMade,
+  });
 
   const result = await processCrawlJobRecord(jobId, botId, url, sourceId);
   if (!result.ok) {

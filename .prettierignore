@@ -1,0 +1,9 @@
+node_modules
+dist
+coverage
+build
+package-lock.json
+*.tfstate
+*.tfstate.*
+.cursor
+.git

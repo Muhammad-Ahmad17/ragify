@@ -13,7 +13,9 @@ function embedUrl(): string {
 }
 
 function embedHeaders(): Record<string, string> {
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
   const key = process.env.EMBED_API_KEY;
   if (key) headers.Authorization = `Bearer ${key}`;
   return headers;
@@ -64,7 +66,9 @@ export async function embedQueryWithTimeout(
   try {
     return await Promise.race([
       embedQuery(text),
-      new Promise<null>((resolve) => setTimeout(() => resolve(null), timeoutMs)),
+      new Promise<null>((resolve) =>
+        setTimeout(() => resolve(null), timeoutMs)
+      ),
     ]);
   } catch {
     return null;
@@ -73,7 +77,9 @@ export async function embedQueryWithTimeout(
 
 export async function checkEmbedHealth(): Promise<boolean> {
   try {
-    const res = await fetch(`${embedUrl()}/health`, { signal: AbortSignal.timeout(5000) });
+    const res = await fetch(`${embedUrl()}/health`, {
+      signal: AbortSignal.timeout(5000),
+    });
     return res.ok;
   } catch {
     return false;

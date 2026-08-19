@@ -1,6 +1,15 @@
 import { Link } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowRight, Check, Copy, FileText, Globe, MessageSquare, Sparkles, Zap } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  Copy,
+  FileText,
+  Globe,
+  MessageSquare,
+  Sparkles,
+  Zap,
+} from "lucide-react";
 
 type TabId = "sources" | "embed" | "chat";
 
@@ -52,7 +61,11 @@ const CANNED_REPLIES: Record<string, string> = {
     "Yes — upload PDFs up to 10 MB. Ragify extracts text, chunks it, and indexes it alongside URLs and free-text. [Source: docs.example.com]",
 };
 
-type ChatMessage = { role: "user" | "assistant"; text: string; streaming?: boolean };
+type ChatMessage = {
+  role: "user" | "assistant";
+  text: string;
+  streaming?: boolean;
+};
 
 function usePrefersReducedMotion() {
   const [reduced, setReduced] = useState(false);
@@ -79,7 +92,10 @@ export function ProductDemo() {
       {/* Browser chrome */}
       <div
         className="flex items-center gap-2 px-4 py-3"
-        style={{ background: "var(--demo-surface)", borderBottom: "1px solid var(--demo-border)" }}
+        style={{
+          background: "var(--demo-surface)",
+          borderBottom: "1px solid var(--demo-border)",
+        }}
       >
         <div className="flex gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
@@ -97,11 +113,19 @@ export function ProductDemo() {
       {/* Value hook bar */}
       <div
         className="flex items-center justify-between gap-3 px-4 py-2.5"
-        style={{ background: "var(--demo-bg)", borderBottom: "1px solid var(--demo-border)" }}
+        style={{
+          background: "var(--demo-bg)",
+          borderBottom: "1px solid var(--demo-border)",
+        }}
       >
         <div className="flex items-center gap-2 min-w-0">
-          <span className="badge badge-success shrink-0">{activeMeta.step}</span>
-          <p className="text-[11px] truncate" style={{ color: "var(--demo-fg)" }}>
+          <span className="badge badge-success shrink-0">
+            {activeMeta.step}
+          </span>
+          <p
+            className="text-[11px] truncate"
+            style={{ color: "var(--demo-fg)" }}
+          >
             {activeMeta.hook}
           </p>
         </div>
@@ -135,26 +159,46 @@ export function ProductDemo() {
               onClick={() => selectTab(id)}
               className="demo-sidebar-tab flex flex-col items-start gap-0.5 px-3 py-2.5 rounded-lg text-left transition-all"
               style={{
-                background: activeTab === id ? "var(--accent-muted)" : "transparent",
-                color: activeTab === id ? "var(--accent-fg)" : "var(--demo-muted)",
-                border: activeTab === id ? "1px solid var(--accent)" : "1px solid transparent",
+                background:
+                  activeTab === id ? "var(--accent-muted)" : "transparent",
+                color:
+                  activeTab === id ? "var(--accent-fg)" : "var(--demo-muted)",
+                border:
+                  activeTab === id
+                    ? "1px solid var(--accent)"
+                    : "1px solid transparent",
               }}
             >
               <span className="flex items-center gap-2 text-xs font-medium">
                 <Icon className="w-3.5 h-3.5 shrink-0" />
                 {label}
               </span>
-              <span className="text-[10px] pl-5.5" style={{ color: "var(--demo-muted)" }}>
+              <span
+                className="text-[10px] pl-5.5"
+                style={{ color: "var(--demo-muted)" }}
+              >
                 {step}
               </span>
             </button>
           ))}
 
-          <div className="mt-auto mx-2 p-3 rounded-lg" style={{ background: "var(--demo-surface)", border: "1px solid var(--demo-border)" }}>
-            <p className="text-[10px] font-semibold mb-1" style={{ color: "var(--demo-fg)" }}>
+          <div
+            className="mt-auto mx-2 p-3 rounded-lg"
+            style={{
+              background: "var(--demo-surface)",
+              border: "1px solid var(--demo-border)",
+            }}
+          >
+            <p
+              className="text-[10px] font-semibold mb-1"
+              style={{ color: "var(--demo-fg)" }}
+            >
               Ready to try it?
             </p>
-            <p className="text-[10px] leading-relaxed mb-2" style={{ color: "var(--demo-muted)" }}>
+            <p
+              className="text-[10px] leading-relaxed mb-2"
+              style={{ color: "var(--demo-muted)" }}
+            >
               Create your bot free — no credit card.
             </p>
             <Link
@@ -183,9 +227,16 @@ export function ProductDemo() {
                 onClick={() => selectTab(id)}
                 className="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all"
                 style={{
-                  background: activeTab === id ? "var(--accent-muted)" : "var(--demo-surface)",
-                  color: activeTab === id ? "var(--accent-fg)" : "var(--demo-muted)",
-                  border: activeTab === id ? "1px solid var(--accent)" : "1px solid transparent",
+                  background:
+                    activeTab === id
+                      ? "var(--accent-muted)"
+                      : "var(--demo-surface)",
+                  color:
+                    activeTab === id ? "var(--accent-fg)" : "var(--demo-muted)",
+                  border:
+                    activeTab === id
+                      ? "1px solid var(--accent)"
+                      : "1px solid transparent",
                 }}
               >
                 {label}
@@ -195,7 +246,9 @@ export function ProductDemo() {
 
           <div className="flex-1 min-h-0 p-4 sm:p-5 overflow-hidden">
             {activeTab === "sources" && <SourcesPanel />}
-            {activeTab === "embed" && <EmbedPanel onTryChat={() => selectTab("chat")} />}
+            {activeTab === "embed" && (
+              <EmbedPanel onTryChat={() => selectTab("chat")} />
+            )}
             {activeTab === "chat" && <ChatPanel />}
           </div>
         </div>
@@ -220,7 +273,8 @@ function SourcesPanel() {
   ]);
 
   const KindIcon = ({ kind }: { kind: "text" | "url" | "pdf" }) => {
-    if (kind === "text" || kind === "pdf") return <FileText className="w-3.5 h-3.5" />;
+    if (kind === "text" || kind === "pdf")
+      return <FileText className="w-3.5 h-3.5" />;
     return <Globe className="w-3.5 h-3.5" />;
   };
 
@@ -228,21 +282,36 @@ function SourcesPanel() {
     <div className="h-full flex flex-col">
       <div className="flex items-start justify-between mb-4 gap-4">
         <div>
-          <p className="text-sm font-medium" style={{ color: "var(--demo-fg)" }}>
+          <p
+            className="text-sm font-medium"
+            style={{ color: "var(--demo-fg)" }}
+          >
             Add your knowledge
           </p>
-          <p className="text-[11px] mt-0.5" style={{ color: "var(--demo-muted)" }}>
+          <p
+            className="text-[11px] mt-0.5"
+            style={{ color: "var(--demo-muted)" }}
+          >
             Mix text, URLs, and PDFs — Ragify indexes them all
           </p>
         </div>
         <div
           className="text-right shrink-0 px-3 py-2 rounded-lg"
-          style={{ background: "var(--success-muted)", border: "1px solid var(--accent)" }}
+          style={{
+            background: "var(--success-muted)",
+            border: "1px solid var(--accent)",
+          }}
         >
-          <p className="text-xl font-bold tabular-nums leading-none" style={{ color: "var(--success)" }}>
+          <p
+            className="text-xl font-bold tabular-nums leading-none"
+            style={{ color: "var(--success)" }}
+          >
             {chunkCount}
           </p>
-          <p className="text-[9px] font-semibold uppercase tracking-wide mt-0.5" style={{ color: "var(--accent-fg)" }}>
+          <p
+            className="text-[9px] font-semibold uppercase tracking-wide mt-0.5"
+            style={{ color: "var(--accent-fg)" }}
+          >
             chunks ready
           </p>
         </div>
@@ -260,15 +329,24 @@ function SourcesPanel() {
           >
             <span
               className="w-8 h-8 rounded-md flex items-center justify-center shrink-0"
-              style={{ background: "var(--demo-bg)", color: "var(--demo-muted)" }}
+              style={{
+                background: "var(--demo-bg)",
+                color: "var(--demo-muted)",
+              }}
             >
               <KindIcon kind={src.kind} />
             </span>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-medium truncate" style={{ color: "var(--demo-fg)" }}>
+              <p
+                className="text-xs font-medium truncate"
+                style={{ color: "var(--demo-fg)" }}
+              >
                 {src.label}
               </p>
-              <p className="text-[10px] capitalize" style={{ color: "var(--demo-muted)" }}>
+              <p
+                className="text-[10px] capitalize"
+                style={{ color: "var(--demo-muted)" }}
+              >
                 {src.kind} source
               </p>
             </div>
@@ -281,7 +359,10 @@ function SourcesPanel() {
         <div className="progress-bar">
           <div className="progress-bar-fill" style={{ width: "100%" }} />
         </div>
-        <p className="text-[11px] mt-2 font-medium" style={{ color: "var(--accent-fg)" }}>
+        <p
+          className="text-[11px] mt-2 font-medium"
+          style={{ color: "var(--accent-fg)" }}
+        >
           All sources indexed — ready to embed on your site
         </p>
       </div>
@@ -290,8 +371,10 @@ function SourcesPanel() {
 }
 
 function StatusBadge({ status }: { status: SourceStatus }) {
-  if (status === "ready") return <span className="badge badge-success">Ready</span>;
-  if (status === "indexing") return <span className="badge badge-warning">Indexing</span>;
+  if (status === "ready")
+    return <span className="badge badge-success">Ready</span>;
+  if (status === "indexing")
+    return <span className="badge badge-warning">Indexing</span>;
   return <span className="badge badge-muted">Pending</span>;
 }
 
@@ -314,8 +397,12 @@ function EmbedPanel({ onTryChat }: { onTryChat: () => void }) {
         <p className="text-sm font-medium" style={{ color: "var(--demo-fg)" }}>
           Copy. Paste. Done.
         </p>
-        <p className="text-[11px] mt-0.5" style={{ color: "var(--demo-muted)" }}>
-          Works on WordPress, Shopify, Webflow, React — anywhere you can add HTML
+        <p
+          className="text-[11px] mt-0.5"
+          style={{ color: "var(--demo-muted)" }}
+        >
+          Works on WordPress, Shopify, Webflow, React — anywhere you can add
+          HTML
         </p>
       </div>
 
@@ -352,7 +439,10 @@ function EmbedPanel({ onTryChat }: { onTryChat: () => void }) {
         </button>
       </div>
 
-      <p className="text-[10px] mb-2 uppercase tracking-wider font-semibold shrink-0" style={{ color: "var(--demo-muted)" }}>
+      <p
+        className="text-[10px] mb-2 uppercase tracking-wider font-semibold shrink-0"
+        style={{ color: "var(--demo-muted)" }}
+      >
         Your site with Ragify
       </p>
       <div
@@ -420,7 +510,9 @@ function ChatPanel() {
     (question: string) => {
       if (streamRef.current) window.clearInterval(streamRef.current);
       setStarted(true);
-      const reply = CANNED_REPLIES[question] ?? "I couldn't find that in your indexed content.";
+      const reply =
+        CANNED_REPLIES[question] ??
+        "I couldn't find that in your indexed content.";
 
       setMessages((m) => [...m, { role: "user", text: question }]);
       setTyping(true);
@@ -433,7 +525,10 @@ function ChatPanel() {
           return;
         }
 
-        setMessages((m) => [...m, { role: "assistant", text: "", streaming: true }]);
+        setMessages((m) => [
+          ...m,
+          { role: "assistant", text: "", streaming: true },
+        ]);
         let i = 0;
         streamRef.current = window.setInterval(() => {
           i += 3;
@@ -458,20 +553,26 @@ function ChatPanel() {
         }, 16);
       }, delay);
     },
-    [reducedMotion, scrollChatToBottom],
+    [reducedMotion, scrollChatToBottom]
   );
 
-  const usedQuestions = new Set(messages.filter((m) => m.role === "user").map((m) => m.text));
+  const usedQuestions = new Set(
+    messages.filter((m) => m.role === "user").map((m) => m.text)
+  );
 
   return (
     <div className="h-full flex flex-col min-h-0">
       <div className="flex items-center justify-between mb-3 shrink-0">
         <div>
-          <p className="text-sm font-medium" style={{ color: "var(--demo-fg)" }}>
+          <p
+            className="text-sm font-medium"
+            style={{ color: "var(--demo-fg)" }}
+          >
             See it answer from your content
           </p>
           <p className="text-[11px]" style={{ color: "var(--demo-muted)" }}>
-            Click a question — answers come from indexed sources, not the open web
+            Click a question — answers come from indexed sources, not the open
+            web
           </p>
         </div>
         <span className="badge badge-success shrink-0">Demo</span>
@@ -489,15 +590,25 @@ function ChatPanel() {
           <div className="h-full flex flex-col items-center justify-center text-center px-4 py-6">
             <div
               className="w-10 h-10 rounded-full flex items-center justify-center mb-3"
-              style={{ background: "var(--accent-muted)", color: "var(--accent-fg)" }}
+              style={{
+                background: "var(--accent-muted)",
+                color: "var(--accent-fg)",
+              }}
             >
               <MessageSquare className="w-5 h-5" />
             </div>
-            <p className="text-xs font-medium mb-1" style={{ color: "var(--demo-fg)" }}>
+            <p
+              className="text-xs font-medium mb-1"
+              style={{ color: "var(--demo-fg)" }}
+            >
               Ask anything about your business
             </p>
-            <p className="text-[10px] leading-relaxed max-w-[220px]" style={{ color: "var(--demo-muted)" }}>
-              Pick a question below. Ragify searches your indexed docs — not ChatGPT&apos;s training data.
+            <p
+              className="text-[10px] leading-relaxed max-w-[220px]"
+              style={{ color: "var(--demo-muted)" }}
+            >
+              Pick a question below. Ragify searches your indexed docs — not
+              ChatGPT&apos;s training data.
             </p>
           </div>
         )}
@@ -510,10 +621,13 @@ function ChatPanel() {
             <div
               className="max-w-[88%] px-3 py-2 rounded-lg text-[11px] leading-relaxed"
               style={{
-                background: msg.role === "user" ? "var(--accent)" : "var(--demo-bg)",
+                background:
+                  msg.role === "user" ? "var(--accent)" : "var(--demo-bg)",
                 color: msg.role === "user" ? "#fff" : "var(--demo-fg)",
                 border:
-                  msg.role === "assistant" ? "1px solid var(--demo-border)" : "1px solid transparent",
+                  msg.role === "assistant"
+                    ? "1px solid var(--demo-border)"
+                    : "1px solid transparent",
               }}
             >
               {msg.text}
@@ -526,10 +640,16 @@ function ChatPanel() {
           <div className="flex justify-start">
             <div
               className="px-3 py-2.5 rounded-lg flex gap-1"
-              style={{ background: "var(--demo-bg)", border: "1px solid var(--demo-border)" }}
+              style={{
+                background: "var(--demo-bg)",
+                border: "1px solid var(--demo-border)",
+              }}
             >
               <span className="typing-dot" />
-              <span className="typing-dot" style={{ animationDelay: "0.15s" }} />
+              <span
+                className="typing-dot"
+                style={{ animationDelay: "0.15s" }}
+              />
               <span className="typing-dot" style={{ animationDelay: "0.3s" }} />
             </div>
           </div>
@@ -537,7 +657,10 @@ function ChatPanel() {
       </div>
 
       <div className="shrink-0 space-y-2">
-        <p className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: "var(--demo-muted)" }}>
+        <p
+          className="text-[10px] font-semibold uppercase tracking-wide"
+          style={{ color: "var(--demo-muted)" }}
+        >
           Try a question
         </p>
         <div className="flex flex-wrap gap-1.5">
