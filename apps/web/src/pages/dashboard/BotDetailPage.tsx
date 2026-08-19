@@ -9,7 +9,12 @@ import type { Bot, Source } from "@ragify/core/types";
 type BotTab = "embed" | "sources" | "usage" | "chats" | "settings";
 
 function parseTab(value: string | null): BotTab {
-  if (value === "sources" || value === "usage" || value === "chats" || value === "settings") {
+  if (
+    value === "sources" ||
+    value === "usage" ||
+    value === "chats" ||
+    value === "settings"
+  ) {
     return value;
   }
   return "embed";
@@ -37,7 +42,10 @@ export default function BotDetailPage() {
     if (!id) return;
     const token = await getToken();
     if (!token) return;
-    const { sources: srcs, chunkCount: chunks } = await fetchBotSources(token, id);
+    const { sources: srcs, chunkCount: chunks } = await fetchBotSources(
+      token,
+      id
+    );
     setSources(srcs as Source[]);
     setChunkCount(chunks);
   }, [id, getToken]);

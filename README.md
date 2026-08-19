@@ -8,13 +8,13 @@
 
 ## Architecture
 
-| Component | Host | Role |
-|-----------|------|------|
-| `apps/web` | DO droplet (Caddy) | React dashboard + embed widget |
-| `apps/api` | DO droplet | Modular monolith (chat, crawl, billing, admin, cron) |
-| Postgres + pgvector + Redis | DO droplet | Data + BullMQ queue |
-| `apps/embed` | OCI free VM | Self-hosted `bge-small-en-v1.5` embeddings (384-dim, free) |
-| `apps/worker` | OCI free VM | BullMQ crawl/embed/index worker |
+| Component                   | Host               | Role                                                       |
+| --------------------------- | ------------------ | ---------------------------------------------------------- |
+| `apps/web`                  | DO droplet (Caddy) | React dashboard + embed widget                             |
+| `apps/api`                  | DO droplet         | Modular monolith (chat, crawl, billing, admin, cron)       |
+| Postgres + pgvector + Redis | DO droplet         | Data + BullMQ queue                                        |
+| `apps/embed`                | OCI free VM        | Self-hosted `bge-small-en-v1.5` embeddings (384-dim, free) |
+| `apps/worker`               | OCI free VM        | BullMQ crawl/embed/index worker                            |
 
 Auth: **Clerk** · Billing: **Stripe** · LLM: **Groq** · Observability: **Sentry + Datadog**
 

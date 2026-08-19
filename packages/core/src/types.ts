@@ -58,7 +58,10 @@ export interface ChatMessage {
   content: string;
 }
 
-export const PLAN_LIMITS: Record<BotPlan, { messages: number; pages: number; bots: number }> = {
+export const PLAN_LIMITS: Record<
+  BotPlan,
+  { messages: number; pages: number; bots: number }
+> = {
   free: { messages: 500, pages: 100, bots: 1 },
   starter: { messages: 5000, pages: 1000, bots: 3 },
   pro: { messages: 25000, pages: 10000, bots: 10 },

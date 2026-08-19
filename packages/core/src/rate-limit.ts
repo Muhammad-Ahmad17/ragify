@@ -8,10 +8,9 @@ type RedisBackend = UpstashRedis | any;
 function createRedisBackend(): RedisBackend | null {
   const redisUrl = process.env.REDIS_URL;
   if (redisUrl) {
-    return new (IORedis as unknown as new (url: string, opts?: object) => RedisBackend)(
-      redisUrl,
-      { maxRetriesPerRequest: 3, lazyConnect: true }
-    );
+    return new (
+      IORedis as unknown as new (url: string, opts?: object) => RedisBackend
+    )(redisUrl, { maxRetriesPerRequest: 3, lazyConnect: true });
   }
 
   const url = process.env.UPSTASH_REDIS_REST_URL;
@@ -31,11 +30,15 @@ if (process.env.NODE_ENV === "production" && redis && "connect" in redis) {
     .then(() => (redis as { ping: () => Promise<string> }).ping())
     .then((pong: string) => {
       if (pong !== "PONG") {
-        console.error("[rate-limit] Redis ping failed — rate limits may not work");
+        console.error(
+          "[rate-limit] Redis ping failed — rate limits may not work"
+        );
       }
     })
     .catch(() => {
-      console.error("[rate-limit] Redis unreachable — rate limits disabled until Redis is up");
+      console.error(
+        "[rate-limit] Redis unreachable — rate limits disabled until Redis is up"
+      );
     });
 }
 
@@ -85,7 +88,9 @@ export async function checkRateLimit(
 
   if (!limiter) {
     if (process.env.NODE_ENV === "production") {
-      console.warn("[rate-limit] Redis not configured — rate limiting disabled");
+      console.warn(
+        "[rate-limit] Redis not configured — rate limiting disabled"
+      );
     }
     return noopResult;
   }

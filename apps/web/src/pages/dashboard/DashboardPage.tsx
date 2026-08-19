@@ -31,7 +31,10 @@ export default function DashboardPage() {
     <div>
       <div className="flex items-end justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-xl font-medium tracking-tight" style={{ color: "var(--fg)" }}>
+          <h1
+            className="text-xl font-medium tracking-tight"
+            style={{ color: "var(--fg)" }}
+          >
             Your bots
           </h1>
           <p className="text-sm mt-1" style={{ color: "var(--fg-secondary)" }}>
@@ -48,23 +51,42 @@ export default function DashboardPage() {
       ) : bots.length === 0 ? (
         <div className="empty-state anim-fade-up">
           <Bot className="empty-state-icon" />
-          <p className="text-sm font-medium mb-1" style={{ color: "var(--fg)" }}>
+          <p
+            className="text-sm font-medium mb-1"
+            style={{ color: "var(--fg)" }}
+          >
             Create your first bot
           </p>
-          <p className="text-sm mb-6 max-w-sm mx-auto" style={{ color: "var(--fg-secondary)" }}>
-            Name your bot, add context as text, URLs, or PDFs, then embed a chat widget on your site.
+          <p
+            className="text-sm mb-6 max-w-sm mx-auto"
+            style={{ color: "var(--fg-secondary)" }}
+          >
+            Name your bot, add context as text, URLs, or PDFs, then embed a chat
+            widget on your site.
           </p>
-          <ul className="text-left text-xs space-y-2 max-w-xs mx-auto mb-8" style={{ color: "var(--fg-muted)" }}>
+          <ul
+            className="text-left text-xs space-y-2 max-w-xs mx-auto mb-8"
+            style={{ color: "var(--fg-muted)" }}
+          >
             <li className="flex items-center gap-2">
-              <FileText className="w-3.5 h-3.5 shrink-0" style={{ color: "var(--accent)" }} />
+              <FileText
+                className="w-3.5 h-3.5 shrink-0"
+                style={{ color: "var(--accent)" }}
+              />
               Add personal details, docs, or crawl a website
             </li>
             <li className="flex items-center gap-2">
-              <Bot className="w-3.5 h-3.5 shrink-0" style={{ color: "var(--accent)" }} />
+              <Bot
+                className="w-3.5 h-3.5 shrink-0"
+                style={{ color: "var(--accent)" }}
+              />
               AI answers from your indexed knowledge
             </li>
             <li className="flex items-center gap-2">
-              <Code className="w-3.5 h-3.5 shrink-0" style={{ color: "var(--accent)" }} />
+              <Code
+                className="w-3.5 h-3.5 shrink-0"
+                style={{ color: "var(--accent)" }}
+              />
               One script tag to embed on any site
             </li>
           </ul>
@@ -83,7 +105,10 @@ export default function DashboardPage() {
             >
               <div
                 className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 text-sm font-medium"
-                style={{ background: `${b.primary_color}18`, color: b.primary_color }}
+                style={{
+                  background: `${b.primary_color}18`,
+                  color: b.primary_color,
+                }}
               >
                 {b.name.charAt(0).toUpperCase()}
               </div>

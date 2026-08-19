@@ -96,7 +96,9 @@ export async function assertSafeUrl(input: string): Promise<URL> {
 
   for (const { address } of addresses) {
     if (isPrivateIp(address)) {
-      throw new UnsafeUrlError("URL resolves to a private or reserved IP address");
+      throw new UnsafeUrlError(
+        "URL resolves to a private or reserved IP address"
+      );
     }
   }
 
@@ -167,7 +169,11 @@ function extractText(url: string, html: string): CrawlResult {
     $("meta[property='og:title']").attr("content") ||
     new URL(url).hostname;
 
-  const root = $("main").length ? $("main") : $("article").length ? $("article") : $("body");
+  const root = $("main").length
+    ? $("main")
+    : $("article").length
+      ? $("article")
+      : $("body");
 
   root
     .find("p, h1, h2, h3, h4, h5, h6, li, blockquote, pre, br")
@@ -175,7 +181,10 @@ function extractText(url: string, html: string): CrawlResult {
       $(el).append("\n");
     });
 
-  const text = root.text().replace(/[ \t]+/g, " ").replace(/\n[ \t]+/g, "\n");
+  const text = root
+    .text()
+    .replace(/[ \t]+/g, " ")
+    .replace(/\n[ \t]+/g, "\n");
 
   return { url, title, text };
 }
@@ -188,7 +197,10 @@ function normalizeUrl(input: string): string {
   return u.toString();
 }
 
-export async function discoverLinks(seedUrl: string, limit = 10): Promise<string[]> {
+export async function discoverLinks(
+  seedUrl: string,
+  limit = 10
+): Promise<string[]> {
   const url = normalizeUrl(seedUrl);
   await assertSafeUrl(url);
   const origin = new URL(url).origin;

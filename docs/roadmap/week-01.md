@@ -186,7 +186,7 @@ Three real defects. Each gets its own PR so the history reads clearly.
 
 In `apps/api/src/modules/chat/routes.ts` (around lines 177-201) the rate limit and quota checks are wrapped so that an error is caught and the request proceeds. If Redis is unavailable, every limit silently disappears - unlimited chat, unlimited spend on Groq tokens.
 
-Change it so a failure to *evaluate* a limit returns `503` rather than allowing the request. Add a log line at error level so the alert you build in week 7 has something to fire on.
+Change it so a failure to _evaluate_ a limit returns `503` rather than allowing the request. Add a log line at error level so the alert you build in week 7 has something to fire on.
 
 Also handle the related case in `packages/core/src/rate-limit.ts`: when Redis is missing entirely, the limiter currently returns success. In production that must be a startup failure, not a warning.
 

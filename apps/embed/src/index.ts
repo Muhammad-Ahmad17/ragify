@@ -13,7 +13,11 @@ function checkAuth(authHeader: string | undefined): boolean {
 app.get("/health", async (c) => {
   try {
     await getExtractor();
-    return c.json({ ok: true, service: "embed", model: process.env.EMBED_MODEL });
+    return c.json({
+      ok: true,
+      service: "embed",
+      model: process.env.EMBED_MODEL,
+    });
   } catch (err) {
     return c.json(
       { ok: false, error: err instanceof Error ? err.message : String(err) },
@@ -27,7 +31,9 @@ app.post("/embed", async (c) => {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
-  const body = await c.req.json().catch(() => null) as { texts?: string[] } | null;
+  const body = (await c.req.json().catch(() => null)) as {
+    texts?: string[];
+  } | null;
   const texts = body?.texts;
   if (!texts?.length || texts.length > 32) {
     return c.json({ error: "Provide texts array (1-32 items)" }, 400);
@@ -43,7 +49,9 @@ app.post("/embed", async (c) => {
 });
 
 const port = Number(process.env.EMBED_PORT ?? 8080);
-console.log(`[embed] Preloading model ${process.env.EMBED_MODEL ?? "Xenova/bge-small-en-v1.5"}...`);
+console.log(
+  `[embed] Preloading model ${process.env.EMBED_MODEL ?? "Xenova/bge-small-en-v1.5"}...`
+);
 getExtractor()
   .then(() => {
     console.log(`[embed] Model ready. Listening on :${port}`);

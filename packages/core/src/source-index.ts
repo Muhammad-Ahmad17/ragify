@@ -9,7 +9,8 @@ export interface IndexJobResult {
 }
 
 export function assertIndexEnv(): string | null {
-  if (!process.env.DATABASE_URL) return "DATABASE_URL is not set on the server.";
+  if (!process.env.DATABASE_URL)
+    return "DATABASE_URL is not set on the server.";
   if (!process.env.EMBED_URL) return "EMBED_URL is not set on the server.";
   return null;
 }

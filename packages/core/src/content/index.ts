@@ -66,11 +66,19 @@ export async function indexSourceText(
         : null,
     });
 
-    log({ msg: "source_indexed", bot_id: botId, source_id: sourceId, chunks: chunks.length });
+    log({
+      msg: "source_indexed",
+      bot_id: botId,
+      source_id: sourceId,
+      chunks: chunks.length,
+    });
     return { ok: true, chunks: chunks.length, title };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    logError("source_index_failed", err, { bot_id: botId, source_id: sourceId });
+    logError("source_index_failed", err, {
+      bot_id: botId,
+      source_id: sourceId,
+    });
     await updateSource(sourceId, { status: "error", error_message: message });
     return { ok: false, error: message };
   }

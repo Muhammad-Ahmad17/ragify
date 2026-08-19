@@ -18,7 +18,10 @@ export function ThemeSwitcher() {
     return (
       <div
         className="h-8 w-[120px] rounded-lg shrink-0"
-        style={{ background: "var(--bg-subtle)", border: "1px solid var(--border)" }}
+        style={{
+          background: "var(--bg-subtle)",
+          border: "1px solid var(--border)",
+        }}
         aria-hidden
       />
     );
@@ -27,7 +30,10 @@ export function ThemeSwitcher() {
   return (
     <div
       className="inline-flex items-center gap-0.5 p-0.5 rounded-lg shrink-0"
-      style={{ background: "var(--bg-subtle)", border: "1px solid var(--border)" }}
+      style={{
+        background: "var(--bg-subtle)",
+        border: "1px solid var(--border)",
+      }}
       role="group"
       aria-label="Theme"
     >

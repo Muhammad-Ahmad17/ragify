@@ -40,11 +40,16 @@ async function checkRedis(): Promise<boolean> {
   const url = process.env.REDIS_URL;
   if (!url) return true;
   const IORedisMod = (await import("ioredis")).default;
-  const client = new (IORedisMod as unknown as new (url: string, opts?: object) => {
-    connect: () => Promise<void>;
-    ping: () => Promise<string>;
-    disconnect: () => void;
-  })(url, { maxRetriesPerRequest: 1, connectTimeout: 3000, lazyConnect: true });
+  const client = new (
+    IORedisMod as unknown as new (
+      url: string,
+      opts?: object
+    ) => {
+      connect: () => Promise<void>;
+      ping: () => Promise<string>;
+      disconnect: () => void;
+    }
+  )(url, { maxRetriesPerRequest: 1, connectTimeout: 3000, lazyConnect: true });
   try {
     await client.connect();
     return (await client.ping()) === "PONG";

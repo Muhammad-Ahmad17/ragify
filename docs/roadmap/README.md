@@ -94,6 +94,6 @@ flowchart TB
 ## Cost guardrails
 
 - Steady state ~$30/month on AWS: EC2 t4g.small ~$12, RDS db.t4g.micro ~$13, S3 and ECR and CloudWatch ~$5. The $200 signup credit covers roughly six months.
-- Deliberately omitted: **NAT Gateway** (~$32/mo), **ALB** (~$16/mo), **EKS** (~$73/mo control plane). k3s ingress handles TLS on the node; workloads sit in public subnets behind tight security groups. This tradeoff is recorded in `docs/adr/`.
+- Deliberately omitted: **NAT Gateway** (~~$32/mo), **ALB** (~$16/mo), **EKS** (~~$73/mo control plane). k3s ingress handles TLS on the node; workloads sit in public subnets behind tight security groups. This tradeoff is recorded in `docs/adr/`.
 - The `$5` budget alarm is the first AWS resource created, before anything else.
 - Every AWS account starting after July 2025 uses the credit model, and the Free plan closes the account when six months elapse or credits run out. Screenshots, diagrams and the demo video are therefore the permanent artifacts - capture them as you go.

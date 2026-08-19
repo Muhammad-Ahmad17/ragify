@@ -22,7 +22,10 @@ export function quotaThresholds(
   return out;
 }
 
-export function nextAlertSent(alreadySent: string, threshold: "80" | "100"): string {
+export function nextAlertSent(
+  alreadySent: string,
+  threshold: "80" | "100"
+): string {
   const parts = new Set(alreadySent.split(",").filter(Boolean));
   parts.add(threshold);
   return [...parts].sort().join(",");
@@ -40,7 +43,8 @@ export async function sendQuotaEmail(opts: {
   limit: number;
 }): Promise<boolean> {
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.RESEND_FROM_EMAIL ?? "Ragify <notifications@ragify.tech>";
+  const from =
+    process.env.RESEND_FROM_EMAIL ?? "Ragify <notifications@ragify.tech>";
   if (!apiKey) return false;
 
   const subject =

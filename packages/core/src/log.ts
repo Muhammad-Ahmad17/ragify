@@ -64,15 +64,22 @@ function captureSentry(err: unknown, extra: Record<string, unknown>) {
         opts?: { extra?: Record<string, unknown> }
       ) => void;
     };
-    Sentry.captureException(err instanceof Error ? err : new Error(String(err)), {
-      extra,
-    });
+    Sentry.captureException(
+      err instanceof Error ? err : new Error(String(err)),
+      {
+        extra,
+      }
+    );
   } catch {
     // Sentry optional
   }
 }
 
-export function logError(msg: string, err: unknown, extra?: Record<string, unknown>) {
+export function logError(
+  msg: string,
+  err: unknown,
+  extra?: Record<string, unknown>
+) {
   log({
     level: "error",
     msg,

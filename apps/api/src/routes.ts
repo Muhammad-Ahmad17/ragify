@@ -1,8 +1,4 @@
-export {
-  chatOptions,
-  chatPost,
-  botGet,
-} from "./modules/chat/routes.js";
+export { chatOptions, chatPost, botGet } from "./modules/chat/routes.js";
 export { crawlPost } from "./modules/crawl/routes.js";
 export {
   stripeWebhookPost,

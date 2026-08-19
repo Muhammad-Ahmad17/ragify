@@ -142,7 +142,11 @@ export async function chatPost(c: Context) {
     const rawBody = await c.req.text();
     const parsed = bodySchema.safeParse(JSON.parse(rawBody || "{}"));
     if (!parsed.success) {
-      return c.json({ error: "Invalid request body" }, 400, corsHeaders(origin));
+      return c.json(
+        { error: "Invalid request body" },
+        400,
+        corsHeaders(origin)
+      );
     }
 
     const { botId, messages: rawMessages } = parsed.data;
@@ -157,7 +161,8 @@ export async function chatPost(c: Context) {
     }
 
     const bot = await getBotById(botId);
-    if (!bot) return c.json({ error: "Bot not found" }, 404, corsHeaders(origin));
+    if (!bot)
+      return c.json({ error: "Bot not found" }, 404, corsHeaders(origin));
 
     const allowedOrigins = bot.allowed_origins ?? [];
     const { allowed, matchedOrigin } = originMatchesAllowlist(
@@ -181,7 +186,11 @@ export async function chatPost(c: Context) {
       /* fail open */
     }
     if (!rateOk) {
-      return c.json({ error: "Too many requests" }, 429, corsHeaders(matchedOrigin));
+      return c.json(
+        { error: "Too many requests" },
+        429,
+        corsHeaders(matchedOrigin)
+      );
     }
 
     try {
@@ -210,7 +219,10 @@ export async function chatPost(c: Context) {
       async start(controller) {
         controller.enqueue(encoder.encode(""));
         try {
-          const retrievalQuery = buildRetrievalQuery(messages, latestUser.content);
+          const retrievalQuery = buildRetrievalQuery(
+            messages,
+            latestUser.content
+          );
           const context = await fetchRagContext(botId, retrievalQuery);
           const systemPrompt = buildSystemPrompt(bot.system_prompt, context);
 

@@ -104,7 +104,8 @@ export async function stripeWebhookPost(c: Context) {
       event.type === "customer.subscription.updated" ||
       event.type === "customer.subscription.created"
     ) {
-      const obj = event.data.object as Stripe.Checkout.Session | Stripe.Subscription;
+      const obj = event.data.object as
+        Stripe.Checkout.Session | Stripe.Subscription;
       let userId: string | undefined;
       let customerId: string | undefined;
       let subscriptionId: string | undefined;
@@ -132,12 +133,7 @@ export async function stripeWebhookPost(c: Context) {
           "status" in obj ? (obj as Stripe.Subscription).status : "active";
         const effectivePlan =
           status === "active" || status === "trialing" ? plan : "free";
-        await updateUserPlan(
-          userId,
-          effectivePlan,
-          customerId,
-          subscriptionId
-        );
+        await updateUserPlan(userId, effectivePlan, customerId, subscriptionId);
         log({
           msg: "stripe_plan_updated",
           user_id: userId,

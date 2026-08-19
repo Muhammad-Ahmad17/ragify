@@ -44,12 +44,18 @@ export function SiteNav() {
       >
         <Link to="/" className="flex items-center gap-2.5 shrink-0">
           <LogoMark />
-          <span className="text-[0.9375rem] font-semibold tracking-tight" style={{ color: "var(--fg)" }}>
+          <span
+            className="text-[0.9375rem] font-semibold tracking-tight"
+            style={{ color: "var(--fg)" }}
+          >
             Ragify
           </span>
           <span
             className="hidden sm:inline-flex text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded"
-            style={{ background: "var(--accent-muted)", color: "var(--accent-fg)" }}
+            style={{
+              background: "var(--accent-muted)",
+              color: "var(--accent-fg)",
+            }}
           >
             Beta
           </span>
@@ -69,10 +75,16 @@ export function SiteNav() {
         </nav>
 
         <div className="flex items-center gap-1.5">
-          <Link to="/login" className="btn btn-ghost hidden sm:inline-flex text-sm">
+          <Link
+            to="/login"
+            className="btn btn-ghost hidden sm:inline-flex text-sm"
+          >
             Sign in
           </Link>
-          <Link to="/login" className="btn btn-primary hidden sm:inline-flex gap-1.5 text-sm">
+          <Link
+            to="/login"
+            className="btn btn-primary hidden sm:inline-flex gap-1.5 text-sm"
+          >
             Start free
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>

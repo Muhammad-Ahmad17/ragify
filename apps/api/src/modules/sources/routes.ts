@@ -34,7 +34,12 @@ export async function sourceTextPost(c: Context) {
     try {
       rate = await checkRateLimit(crawlLimiter, user.id);
     } catch {
-      rate = { success: true, limit: 999, remaining: 999, reset: Date.now() + 60_000 };
+      rate = {
+        success: true,
+        limit: 999,
+        remaining: 999,
+        reset: Date.now() + 60_000,
+      };
     }
     if (!rate.success) {
       return c.json({ error: "Rate limit exceeded. Try again later." }, 429);
@@ -46,7 +51,8 @@ export async function sourceTextPost(c: Context) {
 
     const source = await createContentSource(botId, "text", title, content);
     const result = await indexSourceText(botId, source.id, content, title);
-    if (!result.ok) return c.json({ error: result.error ?? "Indexing failed" }, 500);
+    if (!result.ok)
+      return c.json({ error: result.error ?? "Indexing failed" }, 500);
 
     return c.json({
       ok: true,
@@ -75,18 +81,29 @@ export async function sourcePdfPost(c: Context) {
     if (!(file instanceof File)) {
       return c.json({ error: "Upload a PDF file." }, 400);
     }
-    if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
+    if (
+      file.type !== "application/pdf" &&
+      !file.name.toLowerCase().endsWith(".pdf")
+    ) {
       return c.json({ error: "Only PDF files are supported." }, 400);
     }
     if (file.size > MAX_PDF_SIZE) {
-      return c.json({ error: `PDF too large (max ${MAX_PDF_SIZE / 1024 / 1024} MB).` }, 400);
+      return c.json(
+        { error: `PDF too large (max ${MAX_PDF_SIZE / 1024 / 1024} MB).` },
+        400
+      );
     }
 
     let rate;
     try {
       rate = await checkRateLimit(crawlLimiter, user.id);
     } catch {
-      rate = { success: true, limit: 999, remaining: 999, reset: Date.now() + 60_000 };
+      rate = {
+        success: true,
+        limit: 999,
+        remaining: 999,
+        reset: Date.now() + 60_000,
+      };
     }
     if (!rate.success) {
       return c.json({ error: "Rate limit exceeded. Try again later." }, 429);
@@ -100,7 +117,8 @@ export async function sourcePdfPost(c: Context) {
 
     const source = await createContentSource(botId, "pdf", title);
     const result = await indexSourcePdf(botId, source.id, buffer, title);
-    if (!result.ok) return c.json({ error: result.error ?? "PDF indexing failed" }, 500);
+    if (!result.ok)
+      return c.json({ error: result.error ?? "PDF indexing failed" }, 500);
 
     await updateSourceRawContent(source.id, `[pdf:${file.name}]`);
 
@@ -126,7 +144,9 @@ export async function sourceReindexPost(c: Context) {
   const user = c.get("user");
 
   try {
-    const parsed = reindexSchema.safeParse(await c.req.json().catch(() => null));
+    const parsed = reindexSchema.safeParse(
+      await c.req.json().catch(() => null)
+    );
     if (!parsed.success) {
       return c.json({ error: "Provide botId and sourceId." }, 400);
     }
@@ -137,7 +157,12 @@ export async function sourceReindexPost(c: Context) {
 
     const sql = getSql();
     const [source] = await sql<
-      { kind: string; raw_content: string | null; title: string | null; url: string }[]
+      {
+        kind: string;
+        raw_content: string | null;
+        title: string | null;
+        url: string;
+      }[]
     >`
       select kind, raw_content, title, url from sources
       where id = ${sourceId} and bot_id = ${botId}
@@ -155,7 +180,8 @@ export async function sourceReindexPost(c: Context) {
         source.raw_content,
         source.title ?? "Text note"
       );
-      if (!result.ok) return c.json({ error: result.error ?? "Re-index failed" }, 500);
+      if (!result.ok)
+        return c.json({ error: result.error ?? "Re-index failed" }, 500);
       return c.json({
         ok: true,
         chunks: result.chunks,
@@ -164,12 +190,16 @@ export async function sourceReindexPost(c: Context) {
     }
 
     if (source.kind === "pdf") {
-      return c.json({ error: "Re-upload the PDF to refresh this source." }, 400);
+      return c.json(
+        { error: "Re-upload the PDF to refresh this source." },
+        400
+      );
     }
 
     const { processSourceCrawl } = await import("@ragify/core/crawl-worker");
     const result = await processSourceCrawl(botId, sourceId, source.url);
-    if (!result.ok) return c.json({ error: result.error ?? "Crawl failed" }, 500);
+    if (!result.ok)
+      return c.json({ error: result.error ?? "Crawl failed" }, 500);
     return c.json({
       ok: true,
       chunks: result.chunks,
