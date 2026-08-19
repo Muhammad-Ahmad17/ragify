@@ -1,3 +1,5 @@
+import { loadApiEnv } from "@ragify/core/env";
+import { assertRateLimitConfigured } from "@ragify/core/rate-limit";
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { initSentry } from "./lib/sentry.js";
@@ -28,20 +30,8 @@ import {
 } from "./routes.js";
 
 initSentry("api");
-
-function validateEnv() {
-  const missing: string[] = [];
-  if (!process.env.DATABASE_URL) missing.push("DATABASE_URL");
-  if (!process.env.CLERK_SECRET_KEY) missing.push("CLERK_SECRET_KEY");
-  if (!process.env.GROQ_API_KEY) missing.push("GROQ_API_KEY");
-  if (!process.env.EMBED_URL) missing.push("EMBED_URL");
-  if (missing.length > 0) {
-    console.error(`[api] Missing required env: ${missing.join(", ")}`);
-    process.exit(1);
-  }
-}
-
-validateEnv();
+loadApiEnv();
+assertRateLimitConfigured();
 
 const app = new Hono();
 

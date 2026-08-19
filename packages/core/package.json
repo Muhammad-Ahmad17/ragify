@@ -8,6 +8,7 @@
     "./crawler": "./src/crawler.ts",
     "./crawl-worker": "./src/crawl-worker.ts",
     "./log": "./src/log.ts",
+    "./env": "./src/env.ts",
     "./rate-limit": "./src/rate-limit.ts",
     "./security": "./src/security.ts",
     "./types": "./src/types.ts",
@@ -31,7 +32,8 @@
     "p-limit": "^7.3.0",
     "pdf-parse": "^2.4.5",
     "postgres": "^3.4.5",
-    "ws": "^8.18.3"
+    "ws": "^8.18.3",
+    "zod": "^3.24.4"
   },
   "devDependencies": {
     "@types/node": "^22.7.4",
