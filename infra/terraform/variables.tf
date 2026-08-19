@@ -38,6 +38,26 @@ variable "spaces_region" {
   default     = "nyc3"
 }
 
+variable "create_spaces_bucket" {
+  description = "Create a DO Spaces bucket (requires spaces_access_id and spaces_secret_key)"
+  type        = bool
+  default     = false
+}
+
+variable "spaces_access_id" {
+  description = "DO Spaces access key (API > Spaces Keys). Required when create_spaces_bucket is true."
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "spaces_secret_key" {
+  description = "DO Spaces secret key. Required when create_spaces_bucket is true."
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
 variable "oci_embed_instance_id" {
   description = "Existing OCI instance OCID for embed VM (import) or leave empty to create"
   type        = string

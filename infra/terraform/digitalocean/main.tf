@@ -14,6 +14,7 @@ resource "digitalocean_droplet" "app" {
 }
 
 resource "digitalocean_spaces_bucket" "backups" {
+  count  = var.create_spaces_bucket ? 1 : 0
   name   = "${var.project_name}-backups"
   region = var.spaces_region
   acl    = "private"
@@ -88,14 +89,14 @@ resource "digitalocean_firewall" "app" {
   }
 }
 
-resource "digitalocean_domain" "app" {
+data "digitalocean_domain" "app" {
   count = var.domain != "" ? 1 : 0
   name  = var.domain
 }
 
 resource "digitalocean_record" "app" {
   count  = var.domain != "" ? 1 : 0
-  domain = digitalocean_domain.app[0].name
+  domain = data.digitalocean_domain.app[0].name
   type   = "A"
   name   = "@"
   value  = digitalocean_droplet.app.ipv4_address
@@ -104,7 +105,7 @@ resource "digitalocean_record" "app" {
 
 resource "digitalocean_record" "www" {
   count  = var.domain != "" ? 1 : 0
-  domain = digitalocean_domain.app[0].name
+  domain = data.digitalocean_domain.app[0].name
   type   = "CNAME"
   name   = "www"
   value  = "@"

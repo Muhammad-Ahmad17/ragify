@@ -7,9 +7,9 @@ output "droplet_id" {
 }
 
 output "spaces_bucket" {
-  value = digitalocean_spaces_bucket.backups.name
+  value = length(digitalocean_spaces_bucket.backups) > 0 ? digitalocean_spaces_bucket.backups[0].name : null
 }
 
 output "spaces_endpoint" {
-  value = "${digitalocean_spaces_bucket.backups.region}.digitaloceanspaces.com"
+  value = length(digitalocean_spaces_bucket.backups) > 0 ? "${digitalocean_spaces_bucket.backups[0].region}.digitaloceanspaces.com" : null
 }

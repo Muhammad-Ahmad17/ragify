@@ -7,7 +7,10 @@ ssh_keys   = ["your-do-ssh-fingerprint"]
 oci_embed_public_ip  = "1.2.3.4"
 oci_worker_public_ip = "5.6.7.8"
 
-# Optional: import existing OCI instances instead of creating new ones
+# DO Spaces (optional — create keys at API > Spaces access keys)
+# create_spaces_bucket = true
+# spaces_access_id     = "DO00..."
+# spaces_secret_key    = "..."
 # oci_embed_instance_id  = "ocid1.instance..."
 # oci_worker_instance_id = "ocid1.instance..."
 # oci_subnet_id          = "ocid1.subnet..."

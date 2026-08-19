@@ -73,7 +73,7 @@ data "oci_core_vnic_attachments" "embed_existing" {
 }
 
 data "oci_core_vnic" "embed_existing" {
-  count = var.oci_embed_instance_id != "" ? 1 : 0
+  count   = var.oci_embed_instance_id != "" ? 1 : 0
   vnic_id = data.oci_core_vnic_attachments.embed_existing[0].vnic_attachments[0].vnic_id
 }
 
@@ -84,7 +84,7 @@ data "oci_core_vnic_attachments" "worker_existing" {
 }
 
 data "oci_core_vnic" "worker_existing" {
-  count = var.oci_worker_instance_id != "" ? 1 : 0
+  count   = var.oci_worker_instance_id != "" ? 1 : 0
   vnic_id = data.oci_core_vnic_attachments.worker_existing[0].vnic_attachments[0].vnic_id
 }
 

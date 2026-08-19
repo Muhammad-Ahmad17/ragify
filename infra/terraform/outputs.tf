@@ -7,17 +7,17 @@ output "spaces_bucket" {
 }
 
 output "oci_embed_ip" {
-  value = module.oci.embed_public_ip
+  value = var.oci_embed_public_ip
 }
 
 output "oci_worker_ip" {
-  value = module.oci.worker_public_ip
+  value = var.oci_worker_public_ip
 }
 
 output "deploy_hosts" {
   value = {
-    do_droplet  = module.digitalocean.droplet_ip
-    oci_embed   = module.oci.embed_public_ip
-    oci_worker  = module.oci.worker_public_ip
+    do_droplet = module.digitalocean.droplet_ip
+    oci_embed  = var.oci_embed_public_ip
+    oci_worker = var.oci_worker_public_ip
   }
 }

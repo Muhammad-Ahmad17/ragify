@@ -6,10 +6,6 @@ terraform {
       source  = "digitalocean/digitalocean"
       version = "~> 2.34"
     }
-    oci = {
-      source  = "oracle/oci"
-      version = "~> 6.0"
-    }
   }
 
   # Uncomment after creating the Spaces bucket for state:
