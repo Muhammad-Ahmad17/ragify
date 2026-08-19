@@ -134,33 +134,3 @@ export async function processCrawlJobRecord(
     return { ok: false, error: message };
   }
 }
-
-export async function processUrlBatch(
-  botId: string,
-  urls: string[]
-): Promise<{ processed: number; errors: string[]; jobIds: string[] }> {
-  const { enqueueCrawlBatch } = await import("./queue/index.js");
-  const { createCrawlJob } = await import("./db/index.js");
-
-  const payloads = [];
-  const jobIds: string[] = [];
-
-  for (const pageUrl of urls) {
-    const ensured = await ensureSource(botId, pageUrl);
-    if ("error" in ensured) continue;
-    const row = await createCrawlJob(botId, pageUrl, ensured.id);
-    jobIds.push(row.id);
-    payloads.push({
-      jobId: row.id,
-      botId,
-      sourceId: ensured.id,
-      url: pageUrl,
-    });
-  }
-
-  if (payloads.length > 0) {
-    await enqueueCrawlBatch(payloads);
-  }
-
-  return { processed: payloads.length, errors: [], jobIds };
-}

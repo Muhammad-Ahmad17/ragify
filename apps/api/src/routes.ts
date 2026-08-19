@@ -7,7 +7,6 @@ export {
 } from "./modules/billing/routes.js";
 export { adminStatsGet } from "./modules/admin/routes.js";
 export {
-  crawlWorkerGet,
   healthCheckGet,
   exportConversationsGet,
   quotaAlertsGet,

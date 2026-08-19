@@ -10,14 +10,6 @@ import {
 } from "@ragify/core/quota-alerts";
 import { log, logError } from "@ragify/core/log";
 
-export async function crawlWorkerGet(c: Context) {
-  if (!verifyCronAuth(c.req.raw)) return c.json({ error: "Unauthorized" }, 401);
-  return c.json({
-    ok: true,
-    message: "Crawl processing handled by BullMQ worker on OCI",
-  });
-}
-
 async function checkPostgres(): Promise<boolean> {
   try {
     const sql = getSql();
