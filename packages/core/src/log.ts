@@ -1,3 +1,5 @@
+import { AsyncLocalStorage } from "node:async_hooks";
+
 type LogLevel = "debug" | "info" | "warn" | "error";
 
 interface LogFields {
@@ -10,6 +12,16 @@ interface LogFields {
   plan?: string;
   error?: string;
   [key: string]: unknown;
+}
+
+const requestContext = new AsyncLocalStorage<{ requestId: string }>();
+
+export function runWithRequestId<T>(requestId: string, fn: () => T): T {
+  return requestContext.run({ requestId }, fn);
+}
+
+export function getRequestId(): string | undefined {
+  return requestContext.getStore()?.requestId;
 }
 
 let sentryReady = false;
@@ -35,11 +47,13 @@ function initSentry() {
 
 export function log(fields: LogFields) {
   initSentry();
-  const { level = "info", msg, ...rest } = fields;
+  const { level = "info", msg, request_id: explicitId, ...rest } = fields;
+  const request_id = explicitId ?? getRequestId();
   const line = JSON.stringify({
     ts: new Date().toISOString(),
     level,
     msg,
+    ...(request_id ? { request_id } : {}),
     ...rest,
   });
 

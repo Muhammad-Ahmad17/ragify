@@ -4,6 +4,7 @@ import { getUserFromBearer, type AuthUser } from "@ragify/core/auth";
 declare module "hono" {
   interface ContextVariableMap {
     user: AuthUser;
+    requestId: string;
   }
 }
 
