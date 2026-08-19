@@ -13,3 +13,5 @@ export function initSentry(service: string) {
 }
 
 export { Sentry };
+
+export const __ciTypeProbe: number = "not-a-number";
