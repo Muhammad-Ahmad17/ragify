@@ -13,3 +13,5 @@ export function initSentry(service: string) {
 }
 
 export { Sentry };
+
+// test leak: aws_access_key_id = AKIAZZZZZZZZZZZZZZZZ
