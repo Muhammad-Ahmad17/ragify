@@ -7,7 +7,7 @@ todos:
     status: pending
   - id: week1-scratch
     content: "Week 1: destroy DigitalOcean; archive full pre-rebuild state on branch old; orphan-reset main to application code only; set up branch protection and PR workflow; write baseline CI from an empty file; fix fail-open rate limiting and the default HMAC secret"
-    status: pending
+    status: completed
   - id: week2-tests
     content: "Week 2: Vitest integration tests against ephemeral Postgres and Redis covering auth, tenancy, quota, SSRF guard and webhook idempotency; multi-stage non-root Dockerfiles with healthchecks; Trivy scanning in CI"
     status: pending
@@ -31,7 +31,7 @@ todos:
     status: pending
   - id: blog
     content: Publish one blog post per phase on aahmad.app (eight total) documenting decisions, incidents and the rebuild
-    status: pending
+    status: in_progress
 isProject: false
 ---
 

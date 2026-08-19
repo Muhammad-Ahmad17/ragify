@@ -1,6 +1,6 @@
 # Rebuilding my SaaS infrastructure from scratch, part 1
 
-Draft for aahmad.app. Publish manually.
+Published: https://aahmad.app/blog/rebuilding-saas-infrastructure-part-1
 
 ---
 
