@@ -1,0 +1,19 @@
+{
+  "name": "ragify",
+  "version": "0.2.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @ragify/web",
+    "dev:api": "npm run dev -w @ragify/api",
+    "dev:embed": "npm run dev -w @ragify/embed",
+    "dev:worker": "npm run dev -w @ragify/worker",
+    "build": "npm run build -w @ragify/web",
+    "typecheck": "npm run typecheck -ws --if-present",
+    "worker": "npm run start -w @ragify/worker",
+    "abuse-test": "tsx scripts/abuse-test.ts"
+  }
+}
