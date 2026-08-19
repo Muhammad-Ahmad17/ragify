@@ -6,7 +6,7 @@ todos:
     content: Write docs/roadmap/ markdown execution guides (index plus one file per week) with day-level tasks, exact commands, verification steps and acceptance criteria
     status: pending
   - id: week1-scratch
-    content: "Week 1: archive and delete infra/terraform, deploy/ and .github/workflows; set up branch protection and PR workflow; write baseline CI from an empty file; fix fail-open rate limiting and the default HMAC secret"
+    content: "Week 1: destroy DigitalOcean; archive full pre-rebuild state on branch old; orphan-reset main to application code only; set up branch protection and PR workflow; write baseline CI from an empty file; fix fail-open rate limiting and the default HMAC secret"
     status: pending
   - id: week2-tests
     content: "Week 2: Vitest integration tests against ephemeral Postgres and Redis covering auth, tenancy, quota, SSRF guard and webhook idempotency; multi-stage non-root Dockerfiles with healthchecks; Trivy scanning in CI"
@@ -97,7 +97,7 @@ Why this split: the two OCI VMs are always-free forever and they host the two ge
 
 ## Cost strategy
 
-- **Destroy the DigitalOcean droplet in week 1.** It serves nobody and is costing you money right now. Take a `pg_dump` first in case any bot data is worth keeping, then `terraform destroy` the DO module and cancel it.
+- **Destroy the DigitalOcean droplet in week 1.** It serves nobody and is costing you money right now. There is no data worth keeping, so destroy immediately - `terraform destroy` the DO module (or delete from the console if state is empty) and cancel the account.
 - New AWS accounts get **$100 credits at signup plus up to $100 from activities, valid 6 months**; the Free plan closes the account when that window ends. Choose the Free plan.
 - Steady-state estimate ~$30/month: EC2 t4g.small ~$12, RDS db.t4g.micro ~$13, S3 + ECR + CloudWatch ~$5. Credits cover roughly six months.
 - **No NAT Gateway** (~$32/mo) and **no ALB** (~$16/mo). k3s ingress on the node handles TLS; workloads sit in public subnets behind tight security groups. Record this as an ADR with the security tradeoff stated honestly - a costed decision reads better in an interview than a textbook diagram.
@@ -109,9 +109,8 @@ Why this split: the two OCI VMs are always-free forever and they host the two ge
 
 No cloud infrastructure. Get to a repo where CI can be trusted and the old operational layer is gone.
 
-- Archive the current operational code on a branch (`archive/pre-rebuild`), then **delete `infra/terraform/`, `deploy/` and `.github/workflows/` from `main`**. Everything operational gets rewritten by you, not inherited.
-- Point the git remote at `ragify` (still `helply` today) and stop gitignoring `.terraform.lock.hcl`.
-- `pg_dump` the DigitalOcean database, store it locally and in S3 later, then destroy the droplet.
+- Destroy the DigitalOcean droplet (no data to rescue). Archive the full pre-rebuild project on branch `old`, then **orphan-reset `main` to a single commit of application code only** - dropping `infra/`, `deploy/` and `.github/workflows/`. Everything operational gets rewritten by you, not inherited.
+- Point the git remote at `ragify` (still `helply` today). Terraform lock-file policy is decided when you write Terraform in week 3.
 - Branch protection on `main`, PR template, CODEOWNERS, conventional commits, Dependabot.
 - Write `.github/workflows/ci.yml` from scratch: lint, typecheck, format check, and **gitleaks** secret scanning.
 - Fix the security defects the audit found, which are also good blog material:
@@ -147,7 +146,7 @@ The project has **zero automated tests** today, so CI without them is theatre.
 - k3s on the EC2 node with ingress-nginx and cert-manager, replacing Caddy.
 - Helm chart for api and web with per-environment values; secrets from SSM Parameter Store.
 - Private mesh (Tailscale or WireGuard) between AWS and the OCI VMs, replacing firewall rules pinned to manually-supplied public IPs.
-- Restore the `pg_dump` from week 1 into RDS if the data is worth keeping, point DNS at AWS, and **bring the product back up**. Then invite the first real users - the AI-builder communities from your client-acquisition plan are the natural audience for a "chatbot trained on your docs" tool.
+- Run the week-3 migration runner against an empty RDS to build the schema from scratch, point DNS at AWS, and **bring the product back up**. Then invite the first real users - the AI-builder communities from your client-acquisition plan are the natural audience for a "chatbot trained on your docs" tool.
 - From this point production is real. Changes go through the pipeline.
 
 ## Phase 6, Week 6 - CI/CD end to end
@@ -164,7 +163,7 @@ The project has **zero automated tests** today, so CI without them is theatre.
 - Two or three explicit SLOs with **error-budget burn alerts** rather than raw CPU alarms. Alertmanager to Discord.
 - **KEDA autoscaling the crawl worker on BullMQ queue depth** - the strongest single technical story here, and a real need since single-URL crawls run inline in the API and block it.
 - CloudWatch log shipping via fluent-bit, metric filters, alarms.
-- RDS automated backups plus `pg_dump` to S3, and a **documented restore drill with measured RPO and RTO**. Backup scripts existed before but no restore was ever proven.
+- RDS automated backups plus `pg_dump` to S3, and a **documented restore drill with measured RPO and RTO** against seeded data (there was no production dump to restore). Backup scripts existed before but no restore was ever proven.
 
 ## Phase 8, Week 8 - Chaos, documentation, demo
 

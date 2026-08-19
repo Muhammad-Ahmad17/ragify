@@ -28,14 +28,14 @@ Before Day 1:
 
 - Node 20, Docker and Docker Compose installed locally
 - `gh` CLI authenticated (`gh auth status`)
-- DigitalOcean access (console login or `doctl`) to rescue data and destroy the droplet
+- DigitalOcean access (console login or `doctl`) to destroy the droplet - there is no data to rescue
 - Oracle Cloud console access for the two free VMs
 - A card that works online for AWS signup in week 3 - the plan stays inside the $200 credit window, so expected cost is near zero
 - A Discord webhook URL for alerts later (create a private server, one channel)
 
 ## The eight weeks
 
-**Week 1 - Clear the ground.** Rescue the database, destroy the DigitalOcean droplet, archive and delete the old `infra/`, `deploy/` and workflows, establish the PR workflow, write baseline CI from an empty file, and fix the fail-open rate limiting plus the insecure default HMAC secret.
+**Week 1 - Clear the ground.** Destroy the DigitalOcean droplet, archive the full pre-rebuild project on branch `old`, orphan-reset `main` to application code only, establish the PR workflow, write baseline CI from an empty file, and fix the fail-open rate limiting plus the insecure default HMAC secret.
 
 **Week 2 - Tests and containers.** Vitest integration tests against ephemeral Postgres and Redis covering auth, tenancy, quota, the SSRF guard and webhook idempotency. Multi-stage non-root Dockerfiles with healthchecks. Trivy scanning in CI.
 

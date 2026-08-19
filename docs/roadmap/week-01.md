@@ -6,50 +6,11 @@
 
 ---
 
-## Day 1 - Rescue the data, kill the DigitalOcean bill
+## Day 1 - Kill the DigitalOcean bill, archive everything
 
-The droplet serves nobody and is charging you daily. But do not delete anything before the database is safely on your machine and proven restorable.
+The droplet serves nobody, has no data worth keeping, and is charging you daily. Destroy it, then preserve the full pre-rebuild project on a branch before you wipe `main`.
 
-### 1. Dump the production database
-
-```bash
-ssh root@<DROPLET_IP>
-docker ps                                   # find the postgres container name
-docker exec -t <pg_container> pg_dump -U ragify -d ragify -Fc > /root/ragify-final.dump
-ls -lh /root/ragify-final.dump
-exit
-
-scp root@<DROPLET_IP>:/root/ragify-final.dump ./backups/ragify-final-$(date +%F).dump
-```
-
-### 2. Prove the dump actually restores
-
-A backup you have not restored is not a backup. This is the same discipline as the week 7 restore drill, done early.
-
-```bash
-docker run -d --name pgverify -e POSTGRES_PASSWORD=verify -p 55432:5432 pgvector/pgvector:pg16
-sleep 10
-docker exec -i pgverify psql -U postgres -c "CREATE DATABASE ragify;"
-docker exec -i pgverify psql -U postgres -d ragify -c "CREATE EXTENSION IF NOT EXISTS vector;"
-pg_restore -h localhost -p 55432 -U postgres -d ragify --no-owner ./backups/ragify-final-*.dump
-```
-
-Then verify content, not just exit codes:
-
-```bash
-docker exec -i pgverify psql -U postgres -d ragify -c "\dt"
-docker exec -i pgverify psql -U postgres -d ragify -c "SELECT count(*) FROM users;"
-docker exec -i pgverify psql -U postgres -d ragify -c "SELECT count(*) FROM bots;"
-docker exec -i pgverify psql -U postgres -d ragify -c "SELECT count(*) FROM chunks;"
-```
-
-Write the row counts into `backups/RESTORE-NOTES.md` along with how long the restore took. You will compare against these numbers when you load RDS in week 5.
-
-```bash
-docker rm -f pgverify
-```
-
-### 3. Destroy the droplet
+### 1. Destroy the droplet
 
 Check whether Terraform actually tracks it first - the audit found `terraform.tfstate` contains `"resources": []`, meaning state may have been lost:
 
@@ -61,33 +22,32 @@ terraform state list
 - **If resources are listed:** `terraform destroy` and confirm.
 - **If the list is empty:** state is gone, so Terraform cannot destroy it. Delete the droplet, the firewall, and the DNS records from the DigitalOcean console (or with `doctl compute droplet delete <id>`). Note this in `docs/adr/` - lost state causing manual teardown is exactly why week 3 moves state to S3 with locking.
 
-Then confirm in the DO billing page that nothing is still running. Keep the Spaces bucket only if it holds backups you want; otherwise delete it too.
+Then confirm in the DO billing page that nothing is still running. Keep the Spaces bucket only if it holds backups you want; otherwise delete it too. Leave the OCI VMs untouched.
+
+### 2. Archive the full pre-rebuild state on `old`
+
+Commit every in-flight change (including uncommitted Terraform edits) so nothing is lost:
+
+```bash
+git checkout -b old
+git add -A
+git commit -m "chore: archive full pre-rebuild state"
+git push -u origin old
+```
+
+Confirm the branch and its file tree are visible on GitHub before continuing. This branch is your reference - you can read it any time; you just will not build on it.
 
 ### Acceptance criteria
 
-- [ ] `./backups/ragify-final-*.dump` exists locally
-- [ ] Dump restored into a throwaway container with row counts recorded in `backups/RESTORE-NOTES.md`
 - [ ] Droplet, firewall and DNS records deleted; DO billing shows no running resources
 - [ ] OCI VMs untouched and still reachable
+- [ ] Branch `old` pushed and contains the full pre-rebuild project (app + infra + deploy + workflows)
 
 ---
 
-## Day 2 - Archive the old operational layer, then delete it
+## Day 2 - Rename the repo, orphan-reset `main`
 
-### 1. Commit the in-flight work so nothing is lost
-
-Your working tree has 11 modified Terraform files and 2 untracked ones from a restructuring in progress.
-
-```bash
-git checkout -b archive/pre-rebuild
-git add -A
-git commit -m "chore: archive pre-rebuild infrastructure and deploy layer"
-git push -u origin archive/pre-rebuild
-```
-
-This branch is your reference. You can read it any time; you just will not build on it.
-
-### 2. Fix the remote and gitignore
+### 1. Fix the remote
 
 The remote still points at the old project name:
 
@@ -97,31 +57,44 @@ gh repo rename ragify                          # or rename in GitHub settings
 git remote set-url origin https://github.com/Muhammad-Ahmad17/ragify.git
 ```
 
-In `infra/terraform/.gitignore`, remove the `.terraform.lock.hcl` line. Lock files belong in version control so CI resolves identical provider versions.
+### 2. Orphan-reset `main` to application code only
 
-### 3. Clear `main`
+Do not surgically delete folders on the existing history. Start a clean history that contains only the product:
 
 ```bash
-git checkout main
-git rm -r --cached infra/terraform deploy .github/workflows
-rm -rf infra/terraform deploy .github/workflows
-git commit -m "chore!: remove inherited infrastructure, deploy and CI layer
+git checkout --orphan rebuild
+git rm -r --cached infra deploy .github docs/CICD.md docs/DEPLOY.md \
+  scripts/abuse-test.ts apps/api/Dockerfile apps/worker/Dockerfile apps/embed/Dockerfile
+rm -rf infra deploy .github docs/CICD.md docs/DEPLOY.md scripts/abuse-test.ts \
+  apps/api/Dockerfile apps/worker/Dockerfile apps/embed/Dockerfile
+git commit -m "chore: initial commit - application code only
 
-Rebuilt from scratch in docs/roadmap. Previous version preserved on
-branch archive/pre-rebuild."
-git push
+Operational layer is rebuilt from scratch across docs/roadmap.
+Full previous project preserved on branch 'old'."
+git branch -M rebuild main
+git push --force origin main
 ```
 
-Keep `infra/bootstrap-vm.sh` deleted too - Ansible replaces it in week 4.
+What stays: `apps/`, `packages/`, `db/migrations/`, root package files, `docs/roadmap/`.
+What is gone from `main` (rewritten later by you): `infra/`, `deploy/`, `.github/workflows/`, the old Dockerfiles, `docs/CICD.md`, `docs/DEPLOY.md`, and `scripts/abuse-test.ts`.
 
-This is your last direct push to `main`. Branch protection lands tomorrow.
+Terraform lock-file policy (`.terraform.lock.hcl` in version control) is decided when you write Terraform from scratch in week 3 - there is no terraform tree on `main` anymore.
+
+Verify:
+
+```bash
+git log --oneline          # exactly one commit
+npm run typecheck          # still passes - only operational code was removed
+```
+
+This is your last direct push to `main`. Branch protection lands tomorrow. Push `old` and confirm it on GitHub **before** the force-push to `main`.
 
 ### Acceptance criteria
 
-- [ ] `archive/pre-rebuild` branch pushed and contains the full old operational layer
 - [ ] Remote and repo renamed to `ragify`
-- [ ] `infra/terraform/`, `deploy/`, `.github/workflows/` gone from `main`
-- [ ] `npm run typecheck` still passes - only operational code was removed, app code is untouched
+- [ ] `main` has a single root commit of application code only
+- [ ] `infra/`, `deploy/`, `.github/` gone from `main`; still recoverable on `old`
+- [ ] `npm run typecheck` still passes
 
 ---
 
@@ -291,10 +264,9 @@ Write `docs/adr/0001-rebuild-operational-layer.md`: the state you inherited, why
 
 ## Week 1 acceptance criteria
 
-- [ ] Database dumped, restore proven, row counts recorded
 - [ ] DigitalOcean fully destroyed, billing at zero
-- [ ] Old operational layer archived on `archive/pre-rebuild` and removed from `main`
-- [ ] Repo renamed to `ragify`, remote updated
+- [ ] Full pre-rebuild project archived on branch `old` and pushed to GitHub
+- [ ] `main` orphan-reset to a single commit of application code only; remote renamed to `ragify`
 - [ ] `main` protected, PRs required, CI a required check
 - [ ] `ci.yml` written from scratch with typecheck, format and gitleaks, each gate verified by a deliberate failure
 - [ ] Rate limiting and quota fail closed; app refuses to boot without required secrets
