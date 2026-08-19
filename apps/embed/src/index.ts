@@ -1,6 +1,9 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
+import { loadEmbedEnv } from "@ragify/core/env";
 import { embedTexts, getExtractor } from "./model.js";
+
+loadEmbedEnv();
 
 const app = new Hono();
 const apiKey = process.env.EMBED_API_KEY;

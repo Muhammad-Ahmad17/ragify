@@ -19,7 +19,10 @@ export function signVisitorId(
   ip: string,
   userAgent: string | null
 ): string {
-  const secret = process.env.RATE_LIMIT_SECRET ?? "dev-insecure-secret";
+  const secret = process.env.RATE_LIMIT_SECRET;
+  if (!secret) {
+    throw new Error("RATE_LIMIT_SECRET is not set");
+  }
   const day = new Date().toISOString().slice(0, 10);
   const uaHash = createHash("sha256")
     .update(userAgent ?? "")

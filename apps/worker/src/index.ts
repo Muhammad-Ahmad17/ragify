@@ -1,3 +1,4 @@
+import { loadWorkerEnv } from "@ragify/core/env";
 import * as Sentry from "@sentry/node";
 import { createCrawlWorker, type CrawlJobPayload } from "@ragify/core/queue";
 import { processCrawlJobRecord } from "@ragify/core/crawl-worker";
@@ -15,18 +16,7 @@ if (dsn) {
   });
 }
 
-function validateEnv() {
-  const missing: string[] = [];
-  if (!process.env.DATABASE_URL) missing.push("DATABASE_URL");
-  if (!process.env.REDIS_URL) missing.push("REDIS_URL");
-  if (!process.env.EMBED_URL) missing.push("EMBED_URL");
-  if (missing.length > 0) {
-    console.error(`[worker] Missing: ${missing.join(", ")}`);
-    process.exit(1);
-  }
-}
-
-validateEnv();
+loadWorkerEnv();
 
 async function processJob(job: Job<CrawlJobPayload>) {
   const { jobId, botId, url, sourceId } = job.data;

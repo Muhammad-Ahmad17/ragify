@@ -7,3 +7,5 @@ package-lock.json
 *.tfstate.*
 .cursor
 .git
+.env.example
+apps/web/.env.example
