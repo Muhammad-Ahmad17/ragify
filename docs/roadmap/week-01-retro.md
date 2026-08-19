@@ -9,6 +9,8 @@
 - Global Hono `onError` + request ids on logs.
 - Plan bot limits enforced; dead crawl stub / unused imports / unused `@sentry/react` removed; Clerk email synced on login.
 - README matches reality. ADR 0001 records AWS vs DO vs OCI and the NAT/ALB/EKS skip.
+- Blog post #1 published: https://aahmad.app/blog/rebuilding-saas-infrastructure-part-1
+- DigitalOcean droplets confirmed down (console); no running DO compute.
 
 ## What took longer than expected
 
@@ -19,7 +21,7 @@
 
 ## What we did not finish
 
-- **DigitalOcean destroy** still needs a console/`doctl` pass if the droplet is running. `doctl` on this machine returns 401 (expired token). No data to rescue. Confirm billing is zero in the DO dashboard.
+Nothing from the week 1 list. Local `doctl` is still 401, so teardown was confirmed in the DigitalOcean console rather than the CLI.
 
 ## What we learned about the codebase
 
