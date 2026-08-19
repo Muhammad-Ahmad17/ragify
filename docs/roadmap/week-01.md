@@ -39,9 +39,9 @@ Confirm the branch and its file tree are visible on GitHub before continuing. Th
 
 ### Acceptance criteria
 
-- [ ] Droplet, firewall and DNS records deleted; DO billing shows no running resources
-- [ ] OCI VMs untouched and still reachable
-- [ ] Branch `old` pushed and contains the full pre-rebuild project (app + infra + deploy + workflows)
+- [x] Droplet, firewall and DNS records deleted; DO billing shows no running resources
+- [x] OCI VMs untouched and still reachable
+- [x] Branch `old` pushed and contains the full pre-rebuild project (app + infra + deploy + workflows)
 
 ---
 
@@ -264,7 +264,7 @@ Write `docs/adr/0001-rebuild-operational-layer.md`: the state you inherited, why
 
 ## Week 1 acceptance criteria
 
-- [ ] DigitalOcean fully destroyed, billing at zero — leftover: `doctl` auth is 401; destroy from the console if anything is still running
+- [x] DigitalOcean fully destroyed, billing at zero
 - [x] Full pre-rebuild project archived on branch `old` and pushed to GitHub
 - [x] `main` orphan-reset to a single commit of application code only; remote renamed to `ragify`
 - [x] `main` protected, PRs required, CI a required check
