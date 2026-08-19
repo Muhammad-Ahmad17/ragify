@@ -47,13 +47,9 @@ export async function crawlPost(c: Context) {
     let rate;
     try {
       rate = await checkRateLimit(crawlLimiter, user.id);
-    } catch {
-      rate = {
-        success: true,
-        limit: 999,
-        remaining: 999,
-        reset: Date.now() + 60_000,
-      };
+    } catch (err) {
+      logError("rate_limit_unavailable", err, { bot_id: botId });
+      return c.json({ error: "Service temporarily unavailable" }, 503);
     }
     if (!rate.success) {
       return c.json(
