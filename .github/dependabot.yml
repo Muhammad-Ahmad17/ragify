@@ -1,9 +1,12 @@
 version: 2
+# Version updates are off (open-pull-requests-limit: 0).
+# Re-enable later by raising the limit and tightening groups.
 updates:
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: weekly
+    open-pull-requests-limit: 0
     groups:
       npm:
         patterns:
@@ -16,3 +19,4 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    open-pull-requests-limit: 0
