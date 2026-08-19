@@ -264,15 +264,15 @@ Write `docs/adr/0001-rebuild-operational-layer.md`: the state you inherited, why
 
 ## Week 1 acceptance criteria
 
-- [ ] DigitalOcean fully destroyed, billing at zero
-- [ ] Full pre-rebuild project archived on branch `old` and pushed to GitHub
-- [ ] `main` orphan-reset to a single commit of application code only; remote renamed to `ragify`
-- [ ] `main` protected, PRs required, CI a required check
-- [ ] `ci.yml` written from scratch with typecheck, format and gitleaks, each gate verified by a deliberate failure
-- [ ] Rate limiting and quota fail closed; app refuses to boot without required secrets
-- [ ] Global error handler with request ids
-- [ ] Plan bot limits enforced; dead code and stub endpoints removed
-- [ ] `docs/adr/0001-*.md` and week 1 retro committed
-- [ ] Blog post #1 published
+- [ ] DigitalOcean fully destroyed, billing at zero — leftover: `doctl` auth is 401; destroy from the console if anything is still running
+- [x] Full pre-rebuild project archived on branch `old` and pushed to GitHub
+- [x] `main` orphan-reset to a single commit of application code only; remote renamed to `ragify`
+- [x] `main` protected, PRs required, CI a required check
+- [x] `ci.yml` written from scratch with typecheck, format and gitleaks, each gate verified by a deliberate failure
+- [x] Rate limiting and quota fail closed; app refuses to boot without required secrets
+- [x] Global error handler with request ids
+- [x] Plan bot limits enforced; dead code and stub endpoints removed
+- [x] `docs/adr/0001-*.md` and week 1 retro committed
+- [x] Blog post #1 published: https://aahmad.app/blog/rebuilding-saas-infrastructure-part-1
 
 **Next:** `week-02.md` - tests against ephemeral Postgres and Redis, hardened multi-stage containers, Trivy in CI.

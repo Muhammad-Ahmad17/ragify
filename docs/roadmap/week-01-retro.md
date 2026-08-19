@@ -19,8 +19,7 @@
 
 ## What we did not finish
 
-- **DigitalOcean destroy** still needs a console/`doctl` pass if the droplet is running. No data to rescue.
-- **Blog post #1** is drafted in-repo (`docs/blog/week-01-audit.md`); publishing on aahmad.app is manual.
+- **DigitalOcean destroy** still needs a console/`doctl` pass if the droplet is running. `doctl` on this machine returns 401 (expired token). No data to rescue. Confirm billing is zero in the DO dashboard.
 
 ## What we learned about the codebase
 
