@@ -4,7 +4,6 @@ import {
   assertCrawlEnv,
   ensureSource,
   processSourceCrawl,
-  processUrlBatch,
 } from "@ragify/core/crawl-worker";
 import { createCrawlJob, getBotForOwner } from "@ragify/core/db";
 import { enqueueCrawlJob } from "@ragify/core/queue";

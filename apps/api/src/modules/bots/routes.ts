@@ -9,8 +9,10 @@ import {
   getSourcesByBot,
   countChunksByBot,
   getSql,
+  getUserById,
   updateBot,
 } from "@ragify/core/db";
+import { PLAN_LIMITS, type BotPlan } from "@ragify/core/types";
 
 function slugify(name: string): string {
   return name
@@ -51,6 +53,19 @@ const createSchema = z.object({
 export async function botsCreatePost(c: Context) {
   const user = c.get("user");
   const body = createSchema.parse(await c.req.json());
+  const dbUser = await getUserById(user.id);
+  const plan = (dbUser?.plan ?? "free") as BotPlan;
+  const existing = await getBotsByOwner(user.id);
+  const limit = PLAN_LIMITS[plan]?.bots ?? PLAN_LIMITS.free.bots;
+  if (existing.length >= limit) {
+    return c.json(
+      {
+        error: `Your ${plan} plan allows ${limit} bot${limit === 1 ? "" : "s"}. Upgrade to create more.`,
+        code: "BOT_LIMIT",
+      },
+      403
+    );
+  }
   const slug = `${slugify(body.name)}-${Math.random().toString(36).slice(2, 7)}`;
   const bot = await createBot(user.id, body.name, slug);
 

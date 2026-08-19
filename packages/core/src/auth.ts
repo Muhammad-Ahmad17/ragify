@@ -21,7 +21,12 @@ export async function getUserFromBearer(
     const clerkUserId = payload.sub;
     if (!clerkUserId) return null;
 
-    const user = await upsertUserFromClerk(clerkUserId);
+    const claims = payload as {
+      email?: string;
+      email_address?: string;
+    };
+    const email = claims.email ?? claims.email_address ?? null;
+    const user = await upsertUserFromClerk(clerkUserId, email);
 
     return {
       id: user.id,

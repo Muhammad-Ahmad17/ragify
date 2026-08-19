@@ -1,42 +1,25 @@
 # Ragify
 
-> Paste a URL → get an AI chatbot trained on that content → embed it anywhere with one line of code.
+Paste a URL, get a chatbot trained on that content, embed it anywhere with one line.
 
-**Modular monolith** · **Vite SPA** · **Hono API** · **BullMQ worker** · **Self-hosted embeddings** · **Hybrid DO + OCI**
+**Vite SPA** · **Hono API** · **BullMQ worker** · **Self-hosted embeddings** · **Clerk** · **Stripe** · **Groq**
 
----
-
-## Architecture
-
-| Component                   | Host               | Role                                                       |
-| --------------------------- | ------------------ | ---------------------------------------------------------- |
-| `apps/web`                  | DO droplet (Caddy) | React dashboard + embed widget                             |
-| `apps/api`                  | DO droplet         | Modular monolith (chat, crawl, billing, admin, cron)       |
-| Postgres + pgvector + Redis | DO droplet         | Data + BullMQ queue                                        |
-| `apps/embed`                | OCI free VM        | Self-hosted `bge-small-en-v1.5` embeddings (384-dim, free) |
-| `apps/worker`               | OCI free VM        | BullMQ crawl/embed/index worker                            |
-
-Auth: **Clerk** · Billing: **Stripe** · LLM: **Groq** · Observability: **Sentry + Datadog**
+The product works. The operational layer is being rebuilt (see [docs/roadmap](docs/roadmap/README.md)): AWS replaces DigitalOcean, the always-free Oracle Cloud VMs stay, CI/CD and Terraform are written from scratch.
 
 ---
 
-## Repo layout
+## Architecture (target)
 
-```
-ragify/
-├── apps/
-│   ├── web/           ← Vite/React SPA
-│   ├── api/           ← Modular monolith (Hono)
-│   ├── embed/         ← transformers.js embedding service
-│   └── worker/        ← BullMQ crawl worker
-├── packages/core/     ← Shared crawler, chunk, db, queue, zyte
-├── db/migrations/     ← Postgres schema (384-dim vectors)
-├── deploy/
-│   ├── do/            ← DO droplet compose (Caddy, API, Postgres, Redis)
-│   └── oci/           ← OCI compose (embed + worker)
-├── infra/terraform/   ← DO droplet + OCI VMs + firewall + Spaces
-└── .github/workflows/ ← ci.yml, deploy.yml, terraform.yml
-```
+| Component       | Role                                         |
+| --------------- | -------------------------------------------- |
+| `apps/web`      | React dashboard + embed widget               |
+| `apps/api`      | Hono API (chat, crawl, billing, admin, cron) |
+| `apps/embed`    | Self-hosted `bge-small-en-v1.5` (384-dim)    |
+| `apps/worker`   | BullMQ crawl / embed / index worker          |
+| `packages/core` | Shared crawler, chunking, db, queue          |
+| `db/migrations` | Postgres + pgvector schema                   |
+
+Auth: **Clerk**. Billing: **Stripe**. LLM: **Groq**. API errors can report to **Sentry** when `SENTRY_DSN` is set. There is no Datadog instrumentation.
 
 ---
 
@@ -44,40 +27,20 @@ ragify/
 
 ```bash
 npm install
-cp apps/web/.env.example apps/web/.env.local
-cp deploy/do/.env.example deploy/do/.env   # for reference
+cp .env.example .env.local   # fill DATABASE_URL, Clerk, Groq, Redis, RATE_LIMIT_SECRET
 
-# Start Postgres + Redis (or use docker compose in deploy/do)
-npm run dev              # SPA at :5173
-npm run dev:api          # API at :3000
-npm run dev:embed        # Embed service at :8080
+npm run typecheck
+npm run format
+npm run dev              # SPA
+npm run dev:api          # API :3000
+npm run dev:embed        # embeddings :8080
 npm run dev:worker       # BullMQ worker
 ```
 
-Set `EMBED_URL=http://localhost:8080` and `DATABASE_URL` / `REDIS_URL` in your environment.
+Set `EMBED_URL=http://localhost:8080` plus `DATABASE_URL` and `REDIS_URL`.
 
 ---
 
-## Deploy
+## CI
 
-```bash
-# Terraform (DO + OCI)
-cd infra/terraform && cp terraform.tfvars.example terraform.tfvars
-terraform init && terraform apply
-
-# Manual deploy
-make -C deploy deploy
-make -C deploy verify
-```
-
-See **[docs/DEPLOY.md](docs/DEPLOY.md)** and **[docs/CICD.md](docs/CICD.md)**.
-
----
-
-## Scripts
-
-```bash
-npm run typecheck
-npm run build
-bash deploy/scripts/verify.sh
-```
+Every PR to `main` runs typecheck, Prettier, and gitleaks. Direct pushes to `main` are blocked.

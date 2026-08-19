@@ -17,7 +17,6 @@ import {
   checkoutPost,
   portalPost,
   adminStatsGet,
-  crawlWorkerGet,
   healthCheckGet,
   exportConversationsGet,
   quotaAlertsGet,
@@ -88,7 +87,6 @@ app.post("/api/webhooks/stripe", stripeWebhookPost);
 
 app.get("/api/admin/stats", requireAuth, adminStatsGet);
 
-app.get("/api/cron/crawl-worker", crawlWorkerGet);
 app.get("/api/cron/health-check", healthCheckGet);
 app.get("/api/cron/export-conversations", exportConversationsGet);
 app.get("/api/cron/quota-alerts", quotaAlertsGet);
