@@ -9,6 +9,7 @@
     "./crawl-worker": "./src/crawl-worker.ts",
     "./log": "./src/log.ts",
     "./env": "./src/env.ts",
+    "./errors": "./src/errors.ts",
     "./rate-limit": "./src/rate-limit.ts",
     "./security": "./src/security.ts",
     "./types": "./src/types.ts",

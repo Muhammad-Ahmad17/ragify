@@ -1,9 +1,13 @@
 import { loadApiEnv } from "@ragify/core/env";
+import { AppError } from "@ragify/core/errors";
+import { logError } from "@ragify/core/log";
 import { assertRateLimitConfigured } from "@ragify/core/rate-limit";
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
+import { ZodError } from "zod";
 import { initSentry } from "./lib/sentry.js";
 import { requireAuth, optionalAuth } from "./middleware/auth.js";
+import { requestId } from "./middleware/request-id.js";
 import {
   chatOptions,
   chatPost,
@@ -34,6 +38,30 @@ loadApiEnv();
 assertRateLimitConfigured();
 
 const app = new Hono();
+
+app.use("*", requestId);
+
+app.onError((err, c) => {
+  const id = c.get("requestId") ?? "unknown";
+  if (err instanceof ZodError) {
+    return c.json(
+      {
+        error: "Invalid request",
+        fields: err.flatten().fieldErrors,
+        request_id: id,
+      },
+      400
+    );
+  }
+  if (err instanceof AppError) {
+    return c.json(
+      { error: err.message, code: err.code, request_id: id },
+      err.status as 400 | 401 | 403 | 404 | 409 | 422 | 429 | 500
+    );
+  }
+  logError("unhandled_error", err);
+  return c.json({ error: "Internal Server Error", request_id: id }, 500);
+});
 
 app.get("/health", (c) => c.json({ ok: true, service: "api" }));
 
